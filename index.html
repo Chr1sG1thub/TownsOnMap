@@ -23,8 +23,6 @@
 
   <button id="process-btn">Process GPX Files</button>
 
-  <div id="results"></div>
-
   <div id="map"></div>
 
   <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
@@ -111,8 +109,8 @@
  //     reader.onload = e => {
  //       const towns = parseCSV(e.target.result);
 
-        const resultsDiv = document.getElementById('results');
-        resultsDiv.innerHTML = '';
+  //      const resultsDiv = document.getElementById('results');
+  //      resultsDiv.innerHTML = '';
 
         gpxFiles.forEach(gpxFile => {
           const gpxReader = new FileReader();
@@ -134,11 +132,11 @@
             const sortedTowns = townsEncountered.sort((a, b) => a.Place.localeCompare(b.Place));
             const filteredTowns = sortedTowns.filter((t, i, arr) => i === 0 || t.Place !== arr[i-1].Place);
 
-            const townsString = 'XXX';//filteredTowns.Place.join(' - ');
-            const resultElem = document.createElement('span');
-            const filenm = gpxFile.name.slice(0, -4);
-            resultElem.innerHTML = `<strong>${filenm}</strong>,${townsString}<br/>`;
-            resultsDiv.appendChild(resultElem);
+ //           const townsString = 'XXX';//filteredTowns.Place.join(' - ');
+  //          const resultElem = document.createElement('span');
+ //           const filenm = gpxFile.name.slice(0, -4);
+  //          resultElem.innerHTML = `<strong>${filenm}</strong>,${townsString}<br/>`;
+ //           resultsDiv.appendChild(resultElem);
     const map = L.map('map').setView([43.6, 2], 10);
 
   L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
@@ -185,8 +183,8 @@ patterns: [{
  const myIcon = L.divIcon({
     className: 'custom-div-icon',
     html: `<span style="color:red; background-color: white; white-space: nowrap; opacity: 0.8;"><strong>${ft.Place}</strong></span>`,
-    iconSize: [ft.Place.length()*10, 20],
-  iconAnchor: [ft.Place.length()*5, 10]
+    iconSize: [ft.Place.length*10, 20],
+  iconAnchor: [ft.Place.length*5, 10]
   });
 
   L.marker([ft.Lat, ft.Lon], { icon: myIcon }).addTo(map);
