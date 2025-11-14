@@ -16,10 +16,10 @@
 </head>
 <body>
   <h1>Towns On Map</h1>
-  <p>Upload one or more GPX files to display towns visited.</p>
+  <p>Upload a GPX files to display towns visited.</p>
 
-  <label for="gpx-files">Upload GPX Files:</label><br />
-  <input type="file" id="gpx-files" accept=".gpx" multiple /><br />
+  <label for="gpx-files">Upload GPX File:</label><br />
+  <input type="file" id="gpx-files" accept=".gpx"/><br />
 
   <button id="process-btn">Process GPX Files</button>
 
@@ -185,8 +185,8 @@ patterns: [{
  const myIcon = L.divIcon({
     className: 'custom-div-icon',
     html: `<span style="color:red; background-color: white; white-space: nowrap; opacity: 0.8;"><strong>${ft.Place}</strong></span>`,
-    iconSize: [100, 20],
-  iconAnchor: [50, 10]
+    iconSize: [ft.Place.length()*10, 20],
+  iconAnchor: [ft.Place.length()*5, 10]
   });
 
   L.marker([ft.Lat, ft.Lon], { icon: myIcon }).addTo(map);
