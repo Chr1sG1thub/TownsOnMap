@@ -93,7 +93,16 @@
         return towns;
      }
 
-    async function main() {
+ function sortFunction(a, b) {
+    if (a[0] === b[0]) {
+        return 0;
+    }
+    else {
+        return (a[0] < b[0]) ? -1 : 1;
+    }
+}
+  
+  async function main() {
       
   const towns =  await getTowns();
 
@@ -129,7 +138,9 @@
             }); //points.forEach
 
             // Remove consecutive duplicates to avoid noisy repeats
-            const filteredTowns = townsEncountered.filter((t, i, arr) => i === 0 || t.Place !== arr[i-1].Place);
+            
+            const sortedTowns = townsEncountered.sort(sortFunction);
+            const filteredTowns = sortedTowns.filter((t, i, arr) => i === 0 || t.Place !== arr[i-1].Place);
 
             const townsString = 'XXX';//filteredTowns.Place.join(' - ');
             const resultElem = document.createElement('span');
