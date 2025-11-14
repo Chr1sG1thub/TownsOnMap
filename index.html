@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>TownsOnMap</title>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+  <style>
+    #map { height: 750px; width: 100%; }
+  </style>
+  <style>
+    body { font-family: Arial, sans-serif; margin: 20px; }
+    input, button { margin: 10px 0; }
+    #results { white-space: pre-wrap; margin-top: 20px; }
+  </style>
+</head>
+<body>
+  <h1>GPX Town Finder - Keep Duplicate Towns</h1>
+  <p>Upload one or more GPX files to find towns visited in order (including repeats).</p>
+
+  <label for="gpx-files">Upload GPX Files:</label><br />
+  <input type="file" id="gpx-files" accept=".gpx" multiple /><br />
+
+  <button id="process-btn">Process GPX Files</button>
+
+  <div id="results"></div>
+
+  <div id="map"></div>
+
+  <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+<!-- Include local copies of these plugins in your project folder -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet-gpx/2.2.0/gpx.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/leaflet-polylinedecorator@1.6.0/dist/leaflet.polylineDecorator.min.js"></script>
+
+<script>
+  function findPolylinesInGPXLayer(gpxLayer) {
+  let polylines = [];
+
+  // Iterate first-level sublayers
+  Object.values(gpxLayer._layers).forEach(firstLevelLayer => {
+    if (firstLevelLayer._layers) {
+      // It’s a nested LayerGroup: iterate inside
+      Object.values(firstLevelLayer._layers).forEach(secondLevelLayer => {
+        if (Array.isArray(secondLevelLayer._latlngs) && secondLevelLayer._latlngs.length > 1) {
+          polylines.push(secondLevelLayer);
+        }
+      });
+    } else {
+      // If no nested _layers, check if this layer itself has latlngs
+      if (Array.isArray(firstLevelLayer._latlngs) && firstLevelLayer._latlngs.length > 1) {
+        polylines.push(firstLevelLayer);
+      }
+    }
+  });
+
+  return polylines;
+}
+  
+
+  
+  const map = L.map('map').setView([43.6, 2], 10);
+
+  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    attribution: '© OpenStreetMap contributors'
+  }).addTo(map);
+
+  new L.GPX('Bélesta - Cassagnes - Lansac - St Arnac - Ansignan - Caramany - Bélesta - Montalba.gpx',
+            { async: true,   markers: {
+    startIcon: 'location.ico',
+    endIcon: 'location.ico'
+  }, marker_options: {
+    iconSize: [12, 12],
+    iconAnchor: [6, 6],
+  } }).on('loaded', function(e) {
+    const gpxLayer = e.target;
+    map.fitBounds(gpxLayer.getBounds());
+
+const polylines = findPolylinesInGPXLayer(gpxLayer);
+//console.log('Found polylines:', polylines);
+polylines.forEach(polyline => {
+  L.polylineDecorator(polyline, {
+patterns: [{
+    offset: '5%',
+    repeat: '12%',
+    symbol: L.Symbol.arrowHead({
+      pixelSize: 12,
+      polygon: true,   // filled arrowhead
+      pathOptions: {
+        color: 'blue',      // border color
+        weight: 2,         // border thickness
+        opacity: 1,        // border opacity
+        fill: true,        // enable fill
+        fillColor: 'blue',  // fill color, usually same as border color
+        fillOpacity: 1     // fill opacity
+      }
+    })
+  }]
+  }).addTo(map);
+});
+  }).addTo(map);
+//    function parseCSV(text) {
+  //    const lines = text.trim().split('\r\n');
+    //  return lines.map(line => {
+      //  const [name, lat, lon] = line.split(',').map(s => s.trim());
+        //return { name, lat: parseFloat(lat), lon: parseFloat(lon) };
+//      });
+  //  } //function parseCSV
+
+    function parseGPX(gpxText) {
+      const parser = new DOMParser();
+      const xml = parser.parseFromString(gpxText, 'application/xml');
+      const trkpts = Array.from(xml.querySelectorAll('trkpt'));
+      return trkpts.map(pt => ({
+        lat: parseFloat(pt.getAttribute('lat')),
+        lon: parseFloat(pt.getAttribute('lon'))
+      }));
+    } //function parseGPX
+
+    // Haversine distance in km
+    function distance(lat1, lon1, lat2, lon2) {
+      const R = 6371;
+      const dLat = (lat2 - lat1) * Math.PI / 180;
+      const dLon = (lon2 - lon1) * Math.PI / 180;
+      const a = Math.sin(dLat/2)**2 +
+        Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) *
+        Math.sin(dLon/2)**2;
+      return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+    } //function distance
+
+      async function getTowns() {
+      const response = await fetch('https://script.google.com/macros/s/AKfycbxPapZqH6M-bVeiFCtXjYzlMTPlR_86k5X_XCGrB34hES_p7y9GIpSmavdzqb-xFrrohQ/exec?sheet=Villages');
+      towns = await response.json();
+        return towns;
+     }
+
+    async function main() {
+      
+  const towns =  await getTowns();
+
+      document.getElementById('process-btn').addEventListener('click', () => {
+     const gpxFiles = Array.from(document.getElementById('gpx-files').files);
+
+      if (gpxFiles.length === 0) {
+        alert('Please upload at least one GPX file.');
+        return;
+      }
+
+
+//       const reader = new FileReader();
+ //     reader.onload = e => {
+ //       const towns = parseCSV(e.target.result);
+
+        const resultsDiv = document.getElementById('results');
+        resultsDiv.innerHTML = '';
+
+        gpxFiles.forEach(gpxFile => {
+          const gpxReader = new FileReader();
+          gpxReader.onload = e => {
+            const points = parseGPX(e.target.result);
+            const proximityKm = 0.1;
+            let townsEncountered = [];
+
+            points.forEach(pt => {
+              towns.forEach(town => {
+                if (distance(pt.lat, pt.lon, town.Lat, town.Lon) <= proximityKm) {
+                  townsEncountered.push(town);
+                }
+              }); //towns.forEach
+            }); //points.forEach
+
+            // Remove consecutive duplicates to avoid noisy repeats
+            const filteredTowns = townsEncountered.filter((t, i, arr) => i === 0 || t !== arr[i-1]);
+
+            const townsString = filteredTowns.Place.join(' - ');
+            const resultElem = document.createElement('span');
+            const filenm = gpxFile.name.slice(0, -4);
+            resultElem.innerHTML = `<strong>${filenm}</strong>,${townsString}<br/>`;
+            resultsDiv.appendChild(resultElem);
+          }; //gpxReader.onload
+          gpxReader.readAsText(gpxFile);
+        }); //gpxFiles.forEach
+ 
+    filteredTowns.forEach(ft => {
+  console.log(ft);
+ const myIcon = L.divIcon({
+    className: 'custom-div-icon',
+    html: `<span style="color: blue;background-color: white; opacity: 0.5"><strong>${ft.Place}</strong></span>`,
+    iconSize: [10, 24],
+    iconAnchor: [5, -5]
+  });
+
+  L.marker([ft.Lat, ft.Lon.lon], { icon: myIcon }).addTo(map);
+});
+                                                          
+//      }; //reader.onload
+  //    reader.readAsText(townsFile);
+    }); //addEventListener('click'
+      
+    } //function main()
+
+    main();
+    
+  </script>
+</body>
+</html>
