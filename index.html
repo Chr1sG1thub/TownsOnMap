@@ -129,7 +129,7 @@
             }); //points.forEach
 
             // Remove consecutive duplicates to avoid noisy repeats
-            const filteredTowns = townsEncountered.Place.filter((t, i, arr) => i === 0 || t !== arr[i-1]);
+            const filteredTowns = townsEncountered.filter((t, i, arr) => i === 0 || t !== arr[i-1]);
 
             const townsString = filteredTowns.Place.join(' - ');
             const resultElem = document.createElement('span');
