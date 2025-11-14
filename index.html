@@ -161,7 +161,7 @@ const polylines = findPolylinesInGPXLayer(gpxLayer);
 polylines.forEach(polyline => {
   L.polylineDecorator(polyline, {
 patterns: [{
-    offset: '5%',
+    offset: '3%',
     repeat: '5%',
     symbol: L.Symbol.arrowHead({
       pixelSize: 12,
@@ -184,7 +184,7 @@ patterns: [{
   console.log(ft);
  const myIcon = L.divIcon({
     className: 'custom-div-icon',
-    html: `<span style="color:red; background-color: white; white-space: nowrap; opacity: 1.0;"><strong>${ft.Place}</strong></span>`,
+    html: `<span style="color:red; background-color: white; white-space: nowrap; opacity: 0.5;"><strong>${ft.Place}</strong></span>`,
     iconSize: [100, 20],
   iconAnchor: [50, 10]
   });
