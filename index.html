@@ -6,7 +6,7 @@
   <title>TownsOnMap</title>
   <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
   <style>
-    #map { height: 750px; width: 100%; }
+    #map { height: 100%; width: 100%; }
   </style>
   <style>
     body { font-family: Arial, sans-serif; margin: 20px; }
@@ -181,9 +181,9 @@ patterns: [{
   console.log(ft);
  const myIcon = L.divIcon({
     className: 'custom-div-icon',
-    html: `<span style="color: blue;background-color: white; opacity: 0.5"><strong>${ft.Place}</strong></span>`,
-    iconSize: [10, 24],
-    iconAnchor: [5, -5]
+    html: `<span style="red: blue;background-color: white; opacity: 0.5"><strong>${ft.Place}</strong></span>`,
+  //  iconSize: [10, 24],
+  //  iconAnchor: [5, -5]
   });
 
   L.marker([ft.Lat, ft.Lon], { icon: myIcon }).addTo(map);
