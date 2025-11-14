@@ -179,6 +179,7 @@ patterns: [{
   }).addTo(map);
 });
   }).addTo(map);
+          
     filteredTowns.forEach(ft => {
   console.log(ft);
  const myIcon = L.divIcon({
@@ -189,7 +190,7 @@ patterns: [{
   });
 
   L.marker([ft.Lat, ft.Lon.lon], { icon: myIcon }).addTo(map);
-});
+}); //filteredTowns.forEach
                                                           
         }); //gpxFiles.forEach
  //      }; //reader.onload
