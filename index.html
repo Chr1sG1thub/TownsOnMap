@@ -58,46 +58,6 @@
   
 
   
-  const map = L.map('map').setView([43.6, 2], 10);
-
-  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-    attribution: '© OpenStreetMap contributors'
-  }).addTo(map);
-
-  new L.GPX('Bélesta - Cassagnes - Lansac - St Arnac - Ansignan - Caramany - Bélesta - Montalba.gpx',
-            { async: true,   markers: {
-    startIcon: 'location.ico',
-    endIcon: 'location.ico'
-  }, marker_options: {
-    iconSize: [12, 12],
-    iconAnchor: [6, 6],
-  } }).on('loaded', function(e) {
-    const gpxLayer = e.target;
-    map.fitBounds(gpxLayer.getBounds());
-
-const polylines = findPolylinesInGPXLayer(gpxLayer);
-//console.log('Found polylines:', polylines);
-polylines.forEach(polyline => {
-  L.polylineDecorator(polyline, {
-patterns: [{
-    offset: '5%',
-    repeat: '12%',
-    symbol: L.Symbol.arrowHead({
-      pixelSize: 12,
-      polygon: true,   // filled arrowhead
-      pathOptions: {
-        color: 'blue',      // border color
-        weight: 2,         // border thickness
-        opacity: 1,        // border opacity
-        fill: true,        // enable fill
-        fillColor: 'blue',  // fill color, usually same as border color
-        fillOpacity: 1     // fill opacity
-      }
-    })
-  }]
-  }).addTo(map);
-});
-  }).addTo(map);
 //    function parseCSV(text) {
   //    const lines = text.trim().split('\r\n');
     //  return lines.map(line => {
@@ -192,6 +152,46 @@ patterns: [{
   L.marker([ft.Lat, ft.Lon.lon], { icon: myIcon }).addTo(map);
 });
                                                           
+  const map = L.map('map').setView([43.6, 2], 10);
+
+  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    attribution: '© OpenStreetMap contributors'
+  }).addTo(map);
+
+  new L.GPX(gpxFile,
+            { async: true,   markers: {
+    startIcon: 'location.ico',
+    endIcon: 'location.ico'
+  }, marker_options: {
+    iconSize: [12, 12],
+    iconAnchor: [6, 6],
+  } }).on('loaded', function(e) {
+    const gpxLayer = e.target;
+    map.fitBounds(gpxLayer.getBounds());
+
+const polylines = findPolylinesInGPXLayer(gpxLayer);
+//console.log('Found polylines:', polylines);
+polylines.forEach(polyline => {
+  L.polylineDecorator(polyline, {
+patterns: [{
+    offset: '5%',
+    repeat: '12%',
+    symbol: L.Symbol.arrowHead({
+      pixelSize: 12,
+      polygon: true,   // filled arrowhead
+      pathOptions: {
+        color: 'blue',      // border color
+        weight: 2,         // border thickness
+        opacity: 1,        // border opacity
+        fill: true,        // enable fill
+        fillColor: 'blue',  // fill color, usually same as border color
+        fillOpacity: 1     // fill opacity
+      }
+    })
+  }]
+  }).addTo(map);
+});
+  }).addTo(map);
 //      }; //reader.onload
   //    reader.readAsText(townsFile);
     }); //addEventListener('click'
