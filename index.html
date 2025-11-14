@@ -15,8 +15,8 @@
   </style>
 </head>
 <body>
-  <h1>GPX Town Finder - Keep Duplicate Towns</h1>
-  <p>Upload one or more GPX files to find towns visited in order (including repeats).</p>
+  <h1>Towns On Map</h1>
+  <p>Upload one or more GPX files to display towns visited.</p>
 
   <label for="gpx-files">Upload GPX Files:</label><br />
   <input type="file" id="gpx-files" accept=".gpx" multiple /><br />
@@ -181,9 +181,9 @@ patterns: [{
   console.log(ft);
  const myIcon = L.divIcon({
     className: 'custom-div-icon',
-    html: `<span style="red: blue;background-color: white; opacity: 1.0"><strong>${ft.Place}</strong></span>`,
-    iconSize: [20, 10],
-    iconAnchor: [10, 5]
+    html: `<span style="color:red; background-color: white; opacity: 1.0"><strong>${ft.Place}</strong></span>`,
+    iconSize: [50, 10],
+    iconAnchor: [25, 5]
   });
 
   L.marker([ft.Lat, ft.Lon], { icon: myIcon }).addTo(map);
