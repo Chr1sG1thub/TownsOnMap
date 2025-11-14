@@ -181,9 +181,9 @@ patterns: [{
   console.log(ft);
  const myIcon = L.divIcon({
     className: 'custom-div-icon',
-    html: `<span style="red: blue;background-color: white; opacity: 0.5"><strong>${ft.Place}</strong></span>`,
-  //  iconSize: [10, 24],
-  //  iconAnchor: [5, -5]
+    html: `<span style="red: blue;background-color: white; opacity: 1.0"><strong>${ft.Place}</strong></span>`,
+    iconSize: [20, 10],
+    iconAnchor: [10, 5]
   });
 
   L.marker([ft.Lat, ft.Lon], { icon: myIcon }).addTo(map);
