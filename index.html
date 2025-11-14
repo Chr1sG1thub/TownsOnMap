@@ -93,15 +93,7 @@
         return towns;
      }
 
- function sortFunction(a, b) {
-    if (a[0] === b[0]) {
-        return 0;
-    }
-    else {
-        return (a[0] < b[0]) ? -1 : 1;
-    }
-}
-  
+
   async function main() {
       
   const towns =  await getTowns();
@@ -139,7 +131,7 @@
 
             // Remove consecutive duplicates to avoid noisy repeats
             
-            const sortedTowns = townsEncountered.sort(sortFunction);
+            const sortedTowns = townsEncountered.sort((a, b) => a.Place.localeCompare(b.Place));
             const filteredTowns = sortedTowns.filter((t, i, arr) => i === 0 || t.Place !== arr[i-1].Place);
 
             const townsString = 'XXX';//filteredTowns.Place.join(' - ');
