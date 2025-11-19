@@ -143,9 +143,9 @@ function parseGPX(gpxText) {
             (t, i, arr) =>
               i === 0 ||
               !(
-                t.Place === arr[i - 1].Place &&
-                t.Lat === arr[i - 1].Lat &&
-                t.Lon === arr[i - 1].Lon
+                t.Place === arr[i - 1].Place //&&
+              //  t.Lat === arr[i - 1].Lat &&
+            //    t.Lon === arr[i - 1].Lon
               )
           );
 
