@@ -24,14 +24,14 @@
     </style>
   </head>
   <body>
-    <h1>Towns On Map (Load GPX from Server)</h1>
+<!--    <h1>Towns On Map (Load GPX from Server)</h1>
     <p>
       Pass the GPX file URL as a query parameter <code>gpxFile</code> in the URL.<br />
       Example: <code>?gpxFile=path/to/your/file.gpx</code>
-    </p>
+    </p> -->
 
     <div id="map"></div>
-    <div id="results"></div>
+<!--    <div id="results"></div> -->
 
     <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet-gpx/2.2.0/gpx.min.js"></script>
@@ -207,8 +207,8 @@ function parseGPX(gpxText) {
           });
 
           // Show visited towns in results div
-          const resultsDiv = document.getElementById('results');
-          resultsDiv.textContent = 'Towns visited:\n' + filteredTowns.map(t => t.Place).join('\n');
+//          const resultsDiv = document.getElementById('results');
+  //        resultsDiv.textContent = 'Towns visited:\n' + filteredTowns.map(t => t.Place).join('\n');
         } catch (error) {
           alert('Error loading or processing GPX file.');
           console.error(error);
