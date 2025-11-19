@@ -111,7 +111,13 @@ function parseGPX(gpxText) {
       }
 
       async function loadGPXFromServer() {
-        const filename = getQueryParam('gpxFile');
+ if (!window.map) {
+    window.map = L.map('mapid').setView([43.6, 2], 10); // Replace 'mapid', latitude, longitude, and zoomLevel with your actual values
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+    }).addTo(window.map);
+}
+       const filename = getQueryParam('gpxFile');
         if (!filename) {
           alert('No GPX filename specified in URL query parameter "gpxFile".');
           return;
