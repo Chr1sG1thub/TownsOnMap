@@ -47,16 +47,22 @@
         return params.get(name);
       }
 
-      // Parse GPX trkpt elements to lat/lon array
-      function parseGPX(gpxText) {
-        const parser = new DOMParser();
-        const xml = parser.parseFromString(gpxText, 'application/xml');
-        const trkpts = Array.from(xml.querySelectorAll('trkpt'));
-        return trkpts.map((pt) => ({
-          lat: parseFloat(pt.getAttribute('lat')),
-          lon: parseFloat(pt.getAttribute('lon')),
-        }));
-      }
+function parseGPX(gpxText) {
+  const parser = new DOMParser();
+  const xml = parser.parseFromString(gpxText, 'application/xml');
+
+  // Use getElementsByTagName to avoid namespace issues
+  const trkpts = Array.from(xml.getElementsByTagName('trkpt'));
+
+  // Map and parse lat/lon with fallback parseFloat (+ to convert string)
+  return trkpts.map(pt => {
+    const latStr = pt.getAttribute('lat');
+    const lonStr = pt.getAttribute('lon');
+    const lat = latStr ? parseFloat(latStr) : NaN;
+    const lon = lonStr ? parseFloat(lonStr) : NaN;
+    return { lat, lon };
+  }).filter(point => !isNaN(point.lat) && !isNaN(point.lon)); // Filter out any invalid points
+}
 
       // Haversine distance in kilometers
       function distance(lat1, lon1, lat2, lon2) {
