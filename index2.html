@@ -173,7 +173,7 @@ function parseGPX(gpxText) {
                     iconSize: [12, 12],
                     iconAnchor: [6, 6],
                   } //marker_options
-                }})
+                })
             .on('loaded', function (e) {
               const gpxLayer = e.target;
               window.map.fitBounds(gpxLayer.getBounds());
