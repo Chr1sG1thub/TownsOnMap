@@ -164,7 +164,16 @@ function parseGPX(gpxText) {
           }
 
           // Add GPX layer with arrow decorations
-          new L.GPX(gpxText, { async: true })
+          new L.GPX(gpxText, { async: true,
+                  markers: {
+                    startIcon: 'start.ico',
+                    endIcon: 'finish.ico'
+                  }, //markers
+                  marker_options: {
+                    iconSize: [12, 12],
+                    iconAnchor: [6, 6],
+                  } //marker_options
+                }})
             .on('loaded', function (e) {
               const gpxLayer = e.target;
               window.map.fitBounds(gpxLayer.getBounds());
