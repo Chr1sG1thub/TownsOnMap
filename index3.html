@@ -127,7 +127,7 @@ function parseGPX(gpxText) {
           return;
         }
         try {
-          const response = await fetch('https://drive.google.com/uc?export=download&id='+fileId);
+          const response = await fetch('https://script.google.com/macros/s/AKfycbw9eWGCzzHFJPtSBiWMoOLDf9vf9a3rlYlFc7LvBLbVt50m7DyQ410Bu_W2MiA_g3mj1A/exec?id='+fileId);
           if (!response.ok) {
             alert('Failed to load GPX file from server: ' + fileId);
             return;
