@@ -187,8 +187,7 @@ function parseGPX(gpxText) {
               const gpxLayer = e.target;
               window.map.fitBounds(gpxLayer.getBounds());
 
-     //           const marker = L.marker([coffeeLat, coffeeLon], { icon: coffeeIcon }).addTo(window.map);
-
+ 
               const polylines = findPolylinesInGPXLayer(gpxLayer);
               polylines.forEach((polyline) => {
                 L.polylineDecorator(polyline, {
@@ -225,6 +224,9 @@ function parseGPX(gpxText) {
             });
             L.marker([ft.Lat, ft.Lon], { icon: myIcon }).addTo(window.map);
           });
+
+          const marker = L.marker([coffeeLat, coffeeLon], { icon: coffeeIcon }).addTo(window.map);
+
 
           // Show visited towns in results div
 //          const resultsDiv = document.getElementById('results');
