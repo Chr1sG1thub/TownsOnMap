@@ -118,8 +118,8 @@ function parseGPX(gpxText) {
   iconAnchor: [15, 15],
 });
 
-        const Lat = getQueryParam('clat');
-       const Lon = getQueryParam('clon');
+        const coffeeLat = getQueryParam('clat');
+       const coffeeLon = getQueryParam('clon');
       const filename = getQueryParam('gpxFile');
         if (!filename) {
           alert('No GPX filename specified in URL query parameter "gpxFile".');
