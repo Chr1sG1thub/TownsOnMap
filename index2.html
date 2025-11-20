@@ -112,8 +112,8 @@ function parseGPX(gpxText) {
 
       async function loadGPXFromServer() {
 
-  const Icon = new L.Icon({
-  iconUrl: '.png',
+  const coffeeIcon = new L.Icon({
+  iconUrl: 'coffee.png',
   iconSize: [30, 30],
   iconAnchor: [15, 15],
 });
@@ -222,10 +222,10 @@ function parseGPX(gpxText) {
               iconSize: [ft.Place.length * 10, 20],
               iconAnchor: [ft.Place.length * 5, 10],
             });
-            L.marker([ft.Lat, ft.Lon], { icon: myIcon, zIndexOffset: 1000 }).addTo(window.map);
+            L.marker([ft.Lat, ft.Lon], { icon: myIcon }).addTo(window.map);
           });
 
-          const marker = L.marker([coffeeLat, coffeeLon], { icon: coffeeIcon }).addTo(window.map);
+          const marker = L.marker([coffeeLat, coffeeLon], { icon: coffeeIcon, zIndexOffset: 1000 }).addTo(window.map);
 
 
           // Show visited towns in results div
