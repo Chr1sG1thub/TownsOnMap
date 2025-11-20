@@ -1,24 +1,26 @@
 <html>
   <head>
     <script>
-      function downloadGpx(url, filename) {
+function downloadGpx(url, filename) {
   fetch(url)
     .then(response => response.blob())
     .then(blob => {
+      // Create a new Blob with a specific MIME type to hint browser
+      const gpxBlob = new Blob([blob], { type: 'application/gpx+xml' });
+      const downloadUrl = URL.createObjectURL(gpxBlob);
+      
       const a = document.createElement('a');
-      const url = URL.createObjectURL(blob);
-      a.href = url;
+      a.href = downloadUrl;
       a.download = filename;
       document.body.appendChild(a);
       a.click();
       setTimeout(() => {
         document.body.removeChild(a);
-        URL.revokeObjectURL(url);
+        URL.revokeObjectURL(downloadUrl);
       }, 0);
     })
     .catch(console.error);
 }
-
     </script>
   </head>
   <body>
