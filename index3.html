@@ -111,6 +111,19 @@ function parseGPX(gpxText) {
         return await response.json();
       }
 
+ async function fetchGpxFromProxy(proxyUrl) {
+  const response = await fetch(proxyUrl);
+  const text = await response.text();
+
+  // Extract GPX XML content from the HTML body
+  const parser = new DOMParser();
+  const doc = parser.parseFromString(text, 'text/html');
+  const gpxText = doc.body.textContent || doc.body.innerText;
+
+  // Use gpxText as the GPX XML string in your Leaflet or other GPX parser
+  return gpxText;
+}
+
       async function loadGPXFromServer() {
 
   const coffeeIcon = new L.Icon({
@@ -127,7 +140,7 @@ function parseGPX(gpxText) {
           return;
         }
         try {
-          const response = await fetch('https://script.google.com/macros/s/AKfycbw9eWGCzzHFJPtSBiWMoOLDf9vf9a3rlYlFc7LvBLbVt50m7DyQ410Bu_W2MiA_g3mj1A/exec?id='+fileId);
+          const response = await fetchGpxFromProxy('https://script.google.com/macros/s/AKfycby3dk4hpIwmE4mF4k0b0k15Dm3p7NxfrIlryLJr_VKNbKSQAMwptLo9FD5Es0dPs30QpA/exec?id='+fileId);
           if (!response.ok) {
             alert('Failed to load GPX file from server: ' + fileId);
             return;
