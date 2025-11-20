@@ -126,7 +126,7 @@ function parseGPX(gpxText) {
           return;
         }
         try {
-          const response = await fetch("/gpx/"+filename);
+          const response = await fetch("gpx/"+filename);
           if (!response.ok) {
             alert('Failed to load GPX file from server: ' + filename);
             return;
