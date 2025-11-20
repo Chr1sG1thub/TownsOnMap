@@ -111,7 +111,16 @@ function parseGPX(gpxText) {
       }
 
       async function loadGPXFromServer() {
-       const filename = getQueryParam('gpxFile');
+
+  const coffeeIcon = new L.Icon({
+  iconUrl: 'coffee.png',
+  iconSize: [30, 30],
+  iconAnchor: [15, 15],
+});
+
+        const coffeeLat = getQueryParam('lat');
+       const coffeeLon = getQueryParam('lon');
+      const filename = getQueryParam('gpxFile');
         if (!filename) {
           alert('No GPX filename specified in URL query parameter "gpxFile".');
           return;
@@ -177,6 +186,8 @@ function parseGPX(gpxText) {
             .on('loaded', function (e) {
               const gpxLayer = e.target;
               window.map.fitBounds(gpxLayer.getBounds());
+
+                const marker = L.marker([coffeeLat, coffeeLon], { icon: coffeeIcon }).addTo(window.map);
 
               const polylines = findPolylinesInGPXLayer(gpxLayer);
               polylines.forEach((polyline) => {
