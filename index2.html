@@ -211,7 +211,7 @@ function parseGPX(gpxText) {
                     },
                   ], //patterns
                 }).addTo(window.map); //L.polylineDecorator(polyline
-                polyline.bindTooltip('This is my path').openTooltip();
+                polyline.bindTooltip('This is my path');
               });
             })
             .addTo(window.map); //polylines.forEach
