@@ -189,6 +189,7 @@ function parseGPX(gpxText) {
 
  
               const polylines = findPolylinesInGPXLayer(gpxLayer);
+              
               polylines.forEach((polyline) => {
                 L.polylineDecorator(polyline, {
                   patterns: [
@@ -205,14 +206,15 @@ function parseGPX(gpxText) {
                           fill: true,
                           fillColor: 'blue',
                           fillOpacity: 1,
-                        },
-                      }),
+                        }, //pathOptions
+                      }), //L.Symbol.arrowHead
                     },
-                  ],
-                }).addTo(window.map);
+                  ], //patterns
+                }).addTo(window.map); //L.polylineDecorator(polyline
+                polyline.bindTooltip('This is my path').openTooltip();
               });
             })
-            .addTo(window.map);
+            .addTo(window.map); //polylines.forEach
 
           // Add town markers
           filteredTowns.forEach((ft) => {
