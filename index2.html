@@ -162,6 +162,7 @@ function distanceToNearestVertex(latlngs, target, tolerance, map) {
       }
 
    let distAlong;
+  let targetPoint;
       
   async function loadGPXFromServer() {
 
@@ -273,7 +274,7 @@ const popupPoint = interpolatePointOnLine(poplatlngs, 0.25, window.map);
 
 polyline.bindPopup("Parcours : "+dist+"km, "+deniv+"m").openPopup(popupPoint);
 
-                const targetPoint = L.latLng(coffeeLat, coffeeLon); // example coordinate
+                targetPoint = L.latLng(coffeeLat, coffeeLon); // example coordinate
 const toleranceMeters = 50;
 
 distAlong = distanceToNearestVertex(poplatlngs, targetPoint, toleranceMeters, window.map);
