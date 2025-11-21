@@ -284,6 +284,10 @@ if (distAlong !== null) {
   console.log('No vertex found within 50m of the target point.');
 }
 //               polyline.bindPopup('My path popup').openPopup();
+            L.marker([ft.Lat, ft.Lon], { icon: myIcon }).addTo(window.map);
+          const marker = L.marker([coffeeLat, coffeeLon], { icon: coffeeIcon, zIndexOffset: 1000 }).addTo(window.map);
+          const kms = Math.round(distAlong / 1000);
+          marker.bindPopup("À "+kms+"km").openPopup();
               }); //polylines.forEach
             }) //.on('loaded'
             .addTo(window.map);
@@ -296,10 +300,6 @@ if (distAlong !== null) {
               iconSize: [ft.Place.length * 10, 20],
               iconAnchor: [ft.Place.length * 5, 10],
             }); //const myIcon
-            L.marker([ft.Lat, ft.Lon], { icon: myIcon }).addTo(window.map);
-          const marker = L.marker([coffeeLat, coffeeLon], { icon: coffeeIcon, zIndexOffset: 1000 }).addTo(window.map);
-          const kms = Math.round(distAlong / 1000);
-          marker.bindPopup("À "+kms+"km").openPopup();
           }); //filteredTowns.forEach
 
 
