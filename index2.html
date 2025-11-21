@@ -272,7 +272,12 @@ function distanceToNearestVertex(latlngs, target, tolerance, map) {
  const poplatlngs = polyline.getLatLngs();
 const popupPoint = interpolatePointOnLine(poplatlngs, 0.25, window.map);
 
-polyline.bindPopup("Parcours : "+dist+"km, "+deniv+"m").openPopup(popupPoint);
+//polyline.bindPopup("Parcours : "+dist+"km, "+deniv+"m").openPopup(popupPoint);
+let popup1 = L.popup()
+  .setLatLng(popupPoint)
+  .setContent("Parcours : "+dist+"km, "+deniv+"m")
+  .addTo(window.map);
+
 
                 targetPoint = L.latLng(coffeeLat, coffeeLon); // example coordinate
 const toleranceMeters = 50;
@@ -286,7 +291,13 @@ if (distAlong !== null) {
 //               polyline.bindPopup('My path popup').openPopup();
          const cMarker = L.marker([coffeeLat, coffeeLon], { icon: coffeeIcon, zIndexOffset: 1000 }).addTo(window.map);
           const kms = Math.round(distAlong / 1000);
-          cMarker.bindPopup("À "+kms+"km").openPopup();
+                
+          let popup2 = L.popup()
+          .setLatLng([coffeeLat, coffeeLon])
+          .setContent("À "+kms+"km")
+          .addTo(window.map);
+
+//          cMarker.bindPopup("À "+kms+"km").openPopup();
                }); //polylines.forEach
             }) //.on('loaded'
             .addTo(window.map);
