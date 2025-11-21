@@ -102,7 +102,39 @@ function parseGPX(gpxText) {
         return polylines;
       }
 
-      // Fetch towns data from your Google Apps Script endpoint
+  function interpolatePointOnLine(latlngs, ratio, map) {
+  let totalDistance = 0;
+  const distances = [];
+
+  // Calculate distances between consecutive points
+  for (let i = 0; i < latlngs.length - 1; i++) {
+    const dist = map.distance(latlngs[i], latlngs[i + 1]);
+    distances.push(dist);
+    totalDistance += dist;
+  }
+
+  const targetDistance = totalDistance * ratio; // e.g. 0.25 for 25%
+  let accumulated = 0;
+
+  // Find segment containing target distance
+  for (let i = 0; i < distances.length; i++) {
+    if (accumulated + distances[i] >= targetDistance) {
+      const segmentRatio = (targetDistance - accumulated) / distances[i];
+
+      const lat = latlngs[i].lat + segmentRatio * (latlngs[i + 1].lat - latlngs[i].lat);
+      const lng = latlngs[i].lng + segmentRatio * (latlngs[i + 1].lng - latlngs[i].lng);
+
+      return L.latLng(lat, lng);
+    }
+    accumulated += distances[i];
+  }
+
+  // If ratio is 1 or very close, return last point
+  return latlngs[latlngs.length - 1];
+} //function interpolatePointOnLine
+
+      
+    // Fetch towns data from your Google Apps Script endpoint
       async function getTowns() {
         const response = await fetch(
           'https://script.google.com/macros/s/AKfycbxPapZqH6M-bVeiFCtXjYzlMTPlR_86k5X_XCGrB34hES_p7y9GIpSmavdzqb-xFrrohQ/exec?sheet=Villages'
@@ -212,7 +244,11 @@ function parseGPX(gpxText) {
                   ], //patterns
                 }).addTo(window.map); //L.polylineDecorator(polyline
    //             polyline.bindTooltip('This is my path');
-                polyline.bindPopup('My path popup').openPopup();
+ const poplatlngs = polyline.getLatLngs();
+const popupPoint = interpolatePointOnLine(poplatlngs, 0.25, window.map);
+
+polyline.bindPopup("Popup at 25% along line").openPopup(popupPoint);
+//               polyline.bindPopup('My path popup').openPopup();
               }); //polylines.forEach
             }) //.on('loaded'
             .addTo(window.map);
