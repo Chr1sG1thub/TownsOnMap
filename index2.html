@@ -212,6 +212,7 @@ function parseGPX(gpxText) {
                   ], //patterns
                 }).addTo(window.map); //L.polylineDecorator(polyline
    //             polyline.bindTooltip('This is my path');
+                polyline.bindPopup('My path popup').openPopup();
               }); //polylines.forEach
             }) //.on('loaded'
             .addTo(window.map);
