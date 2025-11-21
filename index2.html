@@ -152,6 +152,9 @@ function parseGPX(gpxText) {
 
         const coffeeLat = getQueryParam('clat');
        const coffeeLon = getQueryParam('clon');
+       const dist = getQueryParam('dist');
+       const deniv = getQueryParam('deniv');
+        
       const filename = getQueryParam('gpxFile');
         if (!filename) {
           alert('No GPX filename specified in URL query parameter "gpxFile".');
@@ -247,7 +250,7 @@ function parseGPX(gpxText) {
  const poplatlngs = polyline.getLatLngs();
 const popupPoint = interpolatePointOnLine(poplatlngs, 0.25, window.map);
 
-polyline.bindPopup("Popup at 25% along line").openPopup(popupPoint);
+polyline.bindPopup(dist+"km, "+deniv+"m").openPopup(popupPoint);
 //               polyline.bindPopup('My path popup').openPopup();
               }); //polylines.forEach
             }) //.on('loaded'
