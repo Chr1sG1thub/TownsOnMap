@@ -250,7 +250,7 @@ function parseGPX(gpxText) {
  const poplatlngs = polyline.getLatLngs();
 const popupPoint = interpolatePointOnLine(poplatlngs, 0.25, window.map);
 
-polyline.bindPopup(dist+"km, "+deniv+"m").openPopup(popupPoint);
+polyline.bindPopup("Parcours : "+dist+"km, "+deniv+"m").openPopup(popupPoint);
 //               polyline.bindPopup('My path popup').openPopup();
               }); //polylines.forEach
             }) //.on('loaded'
