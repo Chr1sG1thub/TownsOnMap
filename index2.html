@@ -274,7 +274,7 @@ polyline.bindPopup("Parcours : "+dist+"km, "+deniv+"m").openPopup(popupPoint);
                 const targetPoint = L.latLng(coffeeLat, coffeeLon); // example coordinate
 const toleranceMeters = 50;
 
-const distAlong = distanceToNearestVertex(latlngs, targetPoint, toleranceMeters, window.map);
+const distAlong = distanceToNearestVertex(poplatlngs, targetPoint, toleranceMeters, window.map);
 if (distAlong !== null) {
   console.log(`Nearest vertex is approximately ${distAlong.toFixed(1)} meters along the polyline.`);
 } else {
