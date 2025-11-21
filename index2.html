@@ -116,7 +116,7 @@ function parseGPX(gpxText) {
   iconUrl: 'coffee.png',
   iconSize: [30, 30],
   iconAnchor: [15, 15],
-});
+}); //const coffeeIcon
 
         const coffeeLat = getQueryParam('clat');
        const coffeeLon = getQueryParam('clon');
@@ -124,13 +124,13 @@ function parseGPX(gpxText) {
         if (!filename) {
           alert('No GPX filename specified in URL query parameter "gpxFile".');
           return;
-        }
+        } //if (!filename)
         try {
           const response = await fetch("gpx/"+filename);
           if (!response.ok) {
             alert('Failed to load GPX file from server: ' + filename);
             return;
-          }
+          } //if (!response.ok)
           const gpxText = await response.text();
           const points = parseGPX(gpxText);
           const proximityKm = 0.1;
@@ -142,9 +142,9 @@ function parseGPX(gpxText) {
                 distance(pt.lat, pt.lon, town.Lat, town.Lon) <= proximityKm
               ) {
                 townsEncountered.push(town);
-              }
-            });
-          });
+              } //if
+            }); //points.forEach
+          }); //towns.forEach
 
           // Sort and deduplicate towns by Place name (and coordinates for safety)
           townsEncountered.sort((a, b) => a.Place.localeCompare(b.Place));
@@ -156,7 +156,7 @@ function parseGPX(gpxText) {
               //  t.Lat === arr[i - 1].Lat &&
             //    t.Lon === arr[i - 1].Lon
               )
-          );
+          ); //const filteredTowns
 
           // Initialize or clear map layers and markers
           if (!window.map || !(window.map instanceof L.Map)) {
@@ -170,7 +170,7 @@ function parseGPX(gpxText) {
                 window.map.removeLayer(layer);
               }
             });
-          }
+          } //if (!window.map || !(window.map instanceof L.Map))
 
           // Add GPX layer with arrow decorations
           new L.GPX(gpxText, { async: true,
@@ -211,10 +211,10 @@ function parseGPX(gpxText) {
                     },
                   ], //patterns
                 }).addTo(window.map); //L.polylineDecorator(polyline
-                polyline.bindTooltip('This is my path');
-              });
-            })
-            .addTo(window.map); //polylines.forEach
+   //             polyline.bindTooltip('This is my path');
+              }); //polylines.forEach
+            }) //.on('loaded'
+            .addTo(window.map);
 
           // Add town markers
           filteredTowns.forEach((ft) => {
@@ -223,9 +223,9 @@ function parseGPX(gpxText) {
               html: `<span style="color:red; background-color: yellow; white-space: nowrap; opacity: 0.8;"><strong>${ft.Place}</strong></span>`,
               iconSize: [ft.Place.length * 10, 20],
               iconAnchor: [ft.Place.length * 5, 10],
-            });
+            }); //const myIcon
             L.marker([ft.Lat, ft.Lon], { icon: myIcon }).addTo(window.map);
-          });
+          }); //filteredTowns.forEach
 
           const marker = L.marker([coffeeLat, coffeeLon], { icon: coffeeIcon, zIndexOffset: 1000 }).addTo(window.map);
 
@@ -236,8 +236,8 @@ function parseGPX(gpxText) {
         } catch (error) {
           alert('Error loading or processing GPX file.');
           console.error(error);
-        }
-      }
+        } //try
+      } //async function loadGPXFromServer
 
       // Main function to start everything
       async function main() {
