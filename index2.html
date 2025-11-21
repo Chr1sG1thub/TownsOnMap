@@ -161,7 +161,9 @@ function distanceToNearestVertex(latlngs, target, tolerance, map) {
         return await response.json();
       }
 
-      async function loadGPXFromServer() {
+   let distAlong;
+      
+  async function loadGPXFromServer() {
 
   const coffeeIcon = new L.Icon({
   iconUrl: 'coffee.png',
@@ -274,7 +276,7 @@ polyline.bindPopup("Parcours : "+dist+"km, "+deniv+"m").openPopup(popupPoint);
                 const targetPoint = L.latLng(coffeeLat, coffeeLon); // example coordinate
 const toleranceMeters = 50;
 
-let distAlong = distanceToNearestVertex(poplatlngs, targetPoint, toleranceMeters, window.map);
+distAlong = distanceToNearestVertex(poplatlngs, targetPoint, toleranceMeters, window.map);
 if (distAlong !== null) {
   console.log(`Nearest vertex is approximately ${distAlong.toFixed(1)} meters along the polyline.`);
 } else {
