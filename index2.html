@@ -134,7 +134,52 @@ function parseGPX(gpxText) {
 } //function interpolatePointOnLine
 
       
-    // Fetch towns data from your Google Apps Script endpoint
+function pointToSegmentDistance(p, p1, p2, map) {
+  // Project point p onto segment p1-p2 and return closest point and distance in meters
+  const toLatLng = (pt) => L.latLng(pt.lat, pt.lng);
+
+  const A = map.latLngToLayerPoint(toLatLng(p));
+  const B = map.latLngToLayerPoint(toLatLng(p1));
+  const C = map.latLngToLayerPoint(toLatLng(p2));
+
+  const AB = C.subtract(B);
+  const AP = A.subtract(B);
+  const ab2 = AB.x * AB.x + AB.y * AB.y;
+  const ap_ab = AP.x * AB.x + AP.y * AB.y;
+  let t = ap_ab / ab2;
+
+  t = Math.max(0, Math.min(1, t));
+
+  const closest = L.point(B.x + AB.x * t, B.y + AB.y * t);
+  const closestLatLng = map.layerPointToLatLng(closest);
+  const distance = map.distance(p, closestLatLng);
+
+  return { closestLatLng, distance, t };
+} //function pointToSegmentDistance
+
+function distanceAlongPolylineAtPoint(latlngs, target, tolerance, map) {
+  let totalDistance = 0;
+
+  for (let i = 0; i < latlngs.length - 1; i++) {
+    const segmentStart = latlngs[i];
+    const segmentEnd = latlngs[i + 1];
+
+    const { closestLatLng, distance, t } = pointToSegmentDistance(target, segmentStart, segmentEnd, map);
+
+    if (distance <= tolerance) {
+      // Calculate distance up to closest point on segment
+      const segmentDistance = map.distance(segmentStart, segmentEnd);
+      return totalDistance + segmentDistance * t;
+    }
+
+    totalDistance += map.distance(segmentStart, segmentEnd);
+  }
+
+  // If target is not within tolerance on any segment, return null
+  return null;
+} //function distanceAlongPolylineAtPoint
+
+      // Fetch towns data from your Google Apps Script endpoint
       async function getTowns() {
         const response = await fetch(
           'https://script.google.com/macros/s/AKfycbxPapZqH6M-bVeiFCtXjYzlMTPlR_86k5X_XCGrB34hES_p7y9GIpSmavdzqb-xFrrohQ/exec?sheet=Villages'
@@ -251,6 +296,13 @@ function parseGPX(gpxText) {
 const popupPoint = interpolatePointOnLine(poplatlngs, 0.25, window.map);
 
 polyline.bindPopup("Parcours : "+dist+"km, "+deniv+"m").openPopup(popupPoint);
+
+                const targetPoint = L.latLng(coffeeLat, coffeeLon); // example coordinate
+const toleranceMeters = 50;
+
+const distanceAlong = distanceAlongPolylineAtPoint(poplatlngs, targetPoint, toleranceMeters, window.map);
+                console.log(distanceAlong);
+
 //               polyline.bindPopup('My path popup').openPopup();
               }); //polylines.forEach
             }) //.on('loaded'
