@@ -297,7 +297,8 @@ if (distAlong !== null) {
           }); //filteredTowns.forEach
 
           const marker = L.marker([coffeeLat, coffeeLon], { icon: coffeeIcon, zIndexOffset: 1000 }).addTo(window.map);
-
+          const kms = Math.round(distAlong / 1000);
+          marker.bindPopup("À "+kms+"km").openPopup(targetPoint);
 
           // Show visited towns in results div
 //          const resultsDiv = document.getElementById('results');
