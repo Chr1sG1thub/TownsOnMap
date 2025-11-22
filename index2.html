@@ -275,7 +275,7 @@ const popupPoint = interpolatePointOnLine(poplatlngs, 0.25, window.map);
 //polyline.bindPopup("Parcours : "+dist+"km, "+deniv+"m").openPopup(popupPoint);
 let popup1 = L.popup()
   .setLatLng(popupPoint)
-  .setContent("Parcours : "+dist+"km, "+deniv+"m")
+  .setContent("<span style='font-size: 14px'>Parcours : "+dist+"km, "+deniv+"m</span>")
   .addTo(window.map);
 
 
