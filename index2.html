@@ -275,7 +275,7 @@ const popupPoint = interpolatePointOnLine(poplatlngs, 0.25, window.map);
 //polyline.bindPopup("Parcours : "+dist+"km, "+deniv+"m").openPopup(popupPoint);
 let popup1 = L.popup()
   .setLatLng(popupPoint)
-  .setContent("<span style='font-size: 14px'>Parcours : "+dist+"km, "+deniv+"m</span>")
+  .setContent("<span style='font-size: 8px'>Parcours : "+dist+"km, "+deniv+"m</span>")
   .addTo(window.map);
 
 
@@ -294,7 +294,7 @@ if (distAlong !== null) {
                 
           let popup2 = L.popup()
           .setLatLng([coffeeLat, coffeeLon])
-          .setContent("Pause Café à "+kms+"km")
+          .setContent("<span style='font-size: 8px'>Pause Café à "+kms+"km</span>")
           .addTo(window.map);
 
 //          cMarker.bindPopup("À "+kms+"km").openPopup();
