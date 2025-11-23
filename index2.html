@@ -388,7 +388,7 @@ if (distAlong !== null) {
       iconToUse = waterIcon;
     }
 
-            L.marker([pe.Lat, pe.Lon], { icon: myIcon }).addTo(window.map);
+            L.marker([pe.Lat, pe.Lon], { icon: iconToUse }).addTo(window.map);
           }); //pdeEncountered.forEach
 
           // Show visited towns in results div
