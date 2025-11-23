@@ -240,7 +240,7 @@ const toiletsIcon = new L.Icon({
 
             for (const pt of points) {
               if (
-                distance(pt.lat, pt.lon, loc.Lat, loc.Lon) <= preproximityKm
+                distance(pt.lat, pt.lon, loc.Lat, loc.Lon) <= pdeproximityKm
               ) {
                 pdeEncountered.push(loc);
                 break;
