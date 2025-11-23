@@ -194,7 +194,7 @@ function distanceToNearestVertex(latlngs, target, tolerance, map) {
           let townsEncountered = [];
 
           towns.forEach((town) => {
-            points.forEach((pt) => {
+            for const pt of towns {
               if (
                 distance(pt.lat, pt.lon, town.Lat, town.Lon) <= proximityKm
               ) {
@@ -202,7 +202,6 @@ function distanceToNearestVertex(latlngs, target, tolerance, map) {
                 break;
               } //if
             }); //points.forEach
-            break;
           }); //towns.forEach
 
           // Sort and deduplicate towns by Place name (and coordinates for safety)
