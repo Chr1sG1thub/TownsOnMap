@@ -228,7 +228,7 @@ const toiletsIcon = new L.Icon({
           const gpxText = await response.text();
           const points = parseGPX(gpxText);
           
-          const proximityKm = 0.1;
+          const pdeproximityKm = 0.25;
            let pdeEncountered = [];
 
   fetch('eau.json')
@@ -240,7 +240,7 @@ const toiletsIcon = new L.Icon({
 
             for (const pt of points) {
               if (
-                distance(pt.lat, pt.lon, loc.Lat, loc.Lon) <= proximityKm
+                distance(pt.lat, pt.lon, loc.Lat, loc.Lon) <= preproximityKm
               ) {
                 pdeEncountered.push(loc);
                 break;
@@ -249,12 +249,14 @@ const toiletsIcon = new L.Icon({
  } //if (loc.Display == 'Y')
   }); //locations.forEach
   }); //locations
+                    const townproximityKm = 0.25;
+
          let townsEncountered = [];
 
           towns.forEach((town) => {
             for (const pt of points) {
               if (
-                distance(pt.lat, pt.lon, town.Lat, town.Lon) <= proximityKm
+                distance(pt.lat, pt.lon, town.Lat, town.Lon) <= townproximityKm
               ) {
                 townsEncountered.push(town);
                 break;
