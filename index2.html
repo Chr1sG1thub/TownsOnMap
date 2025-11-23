@@ -199,8 +199,10 @@ function distanceToNearestVertex(latlngs, target, tolerance, map) {
                 distance(pt.lat, pt.lon, town.Lat, town.Lon) <= proximityKm
               ) {
                 townsEncountered.push(town);
+                break;
               } //if
             }); //points.forEach
+            break;
           }); //towns.forEach
 
           // Sort and deduplicate towns by Place name (and coordinates for safety)
