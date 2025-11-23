@@ -201,7 +201,7 @@ function distanceToNearestVertex(latlngs, target, tolerance, map) {
                 townsEncountered.push(town);
                 break;
               } //if
-            }); //points.forEach
+            } //for (const pt of points)
           }); //towns.forEach
 
           // Sort and deduplicate towns by Place name (and coordinates for safety)
