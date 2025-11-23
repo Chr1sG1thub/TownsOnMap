@@ -258,20 +258,9 @@ const toiletsIcon = new L.Icon({
                 break;
               } //if
             } //for (const pt of points)
- }
+ } //if (loc.Display == 'Y')
   }); //locations.forEach
     
-          towns.forEach((town) => {
-            for (const pt of points) {
-              if (
-                distance(pt.lat, pt.lon, town.Lat, town.Lon) <= proximityKm
-              ) {
-                townsEncountered.push(town);
-                break;
-              } //if
-            } //for (const pt of points)
-          }); //towns.forEach
-
           const proximityKm = 0.1;
           let townsEncountered = [];
 
