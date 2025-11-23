@@ -166,6 +166,42 @@ function distanceToNearestVertex(latlngs, target, tolerance, map) {
       
   async function loadGPXFromServer() {
 
+  const waterIcon = new L.Icon({
+  iconUrl: 'water.png',
+//  shadowUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png',
+  iconSize: [30, 30],
+  iconAnchor: [15, 15],
+  popupAnchor: [1, -30],
+//  shadowSize: [41, 41]
+});
+
+const tapIcon = new L.Icon({
+  iconUrl: 'tap.png',
+//  shadowUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png',
+  iconSize: [30, 30],
+  iconAnchor: [15, 15],
+  popupAnchor: [1, -30],
+//  shadowSize: [41, 41]
+});
+
+const fountainIcon = new L.Icon({
+  iconUrl: 'fountain.png',
+//  shadowUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png',
+  iconSize: [30, 30],
+  iconAnchor: [15, 15],
+  popupAnchor: [1, -30],
+//  shadowSize: [41, 41]
+});
+
+const toiletsIcon = new L.Icon({
+  iconUrl: 'toilets.png',
+//  shadowUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png',
+  iconSize: [30, 30],
+  iconAnchor: [15, 15],
+  popupAnchor: [1, -30],
+//  shadowSize: [41, 41]
+});
+
   const coffeeIcon = new L.Icon({
   iconUrl: 'coffee.png',
   iconSize: [30, 30],
@@ -188,8 +224,53 @@ function distanceToNearestVertex(latlngs, target, tolerance, map) {
             alert('Failed to load GPX file from server: ' + filename);
             return;
           } //if (!response.ok)
+          
           const gpxText = await response.text();
           const points = parseGPX(gpxText);
+          
+          let pdeEncountered = [];
+
+  fetch('eau.json')
+  .then(response => response.json())
+  .then(locations => {
+    locations.forEach(loc => {
+
+ if (loc.Display == 'Y') {
+
+    let iconToUse;
+    if (loc.Type === 'Fontaine') {
+      iconToUse = fountainIcon;
+    } else if (loc.Type === 'Robinet') {
+      iconToUse = tapIcon;
+    } else if (loc.Type === 'Toilettes') {
+      iconToUse = toiletsIcon;
+//    } else if (loc.Genre === 'SOURCE') {
+//      iconToUse = blueIcon;
+    } else if (loc.Type === 'Point d\'Eau') {
+      iconToUse = waterIcon;
+    }
+
+            for (const pt of points) {
+              if (
+                distance(pt.lat, pt.lon, loc.Lat, loc.Lon) <= proximityKm
+              ) {
+    const marker = L.marker([loc.Lat, loc.Lon], { icon: iconToUse }).addTo(window.map);
+                break;
+              } //if
+            } //for (const pt of points)
+  }); //locations.forEach
+    
+          towns.forEach((town) => {
+            for (const pt of points) {
+              if (
+                distance(pt.lat, pt.lon, town.Lat, town.Lon) <= proximityKm
+              ) {
+                townsEncountered.push(town);
+                break;
+              } //if
+            } //for (const pt of points)
+          }); //towns.forEach
+
           const proximityKm = 0.1;
           let townsEncountered = [];
 
