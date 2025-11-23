@@ -228,7 +228,7 @@ const toiletsIcon = new L.Icon({
           const gpxText = await response.text();
           const points = parseGPX(gpxText);
           
-          const pdeproximityKm = 0.25;
+          const pdeproximityKm = 0.15;
            let pdeEncountered = [];
 
   await fetch('eau.json')
