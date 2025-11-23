@@ -231,7 +231,7 @@ const toiletsIcon = new L.Icon({
           const pdeproximityKm = 0.25;
            let pdeEncountered = [];
 
-  fetch('eau.json')
+  await fetch('eau.json')
   .then(response => response.json())
   .then(locations => {
     locations.forEach(loc => {
