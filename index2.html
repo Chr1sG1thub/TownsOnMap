@@ -237,24 +237,11 @@ const toiletsIcon = new L.Icon({
 
  if (loc.Display == 'Y') {
 
-    let iconToUse;
-    if (loc.Type === 'Fontaine') {
-      iconToUse = fountainIcon;
-    } else if (loc.Type === 'Robinet') {
-      iconToUse = tapIcon;
-    } else if (loc.Type === 'Toilettes') {
-      iconToUse = toiletsIcon;
-//    } else if (loc.Genre === 'SOURCE') {
-//      iconToUse = blueIcon;
-    } else if (loc.Type === 'Point d\'Eau') {
-      iconToUse = waterIcon;
-    }
-
             for (const pt of points) {
               if (
                 distance(pt.lat, pt.lon, loc.Lat, loc.Lon) <= proximityKm
               ) {
-    const marker = L.marker([loc.Lat, loc.Lon], { icon: iconToUse }).addTo(window.map);
+                pdeEncountered.push(loc);
                 break;
               } //if
             } //for (const pt of points)
@@ -385,6 +372,22 @@ if (distAlong !== null) {
             L.marker([ft.Lat, ft.Lon], { icon: myIcon }).addTo(window.map);
           }); //filteredTowns.forEach
 
+          pdeEncountered.forEach((pe) => {
+    let iconToUse;
+    if (pe.Type === 'Fontaine') {
+      iconToUse = fountainIcon;
+    } else if (pe.Type === 'Robinet') {
+      iconToUse = tapIcon;
+    } else if (pe.Type === 'Toilettes') {
+      iconToUse = toiletsIcon;
+//    } else if (loc.Genre === 'SOURCE') {
+//      iconToUse = blueIcon;
+    } else if (pe.Type === 'Point d\'Eau') {
+      iconToUse = waterIcon;
+    }
+
+            L.marker([pe.Lat, pe.Lon], { icon: myIcon }).addTo(window.map);
+          }); //pdeEncountered.forEach
 
           // Show visited towns in results div
 //          const resultsDiv = document.getElementById('results');
