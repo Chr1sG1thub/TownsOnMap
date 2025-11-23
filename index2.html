@@ -228,7 +228,8 @@ const toiletsIcon = new L.Icon({
           const gpxText = await response.text();
           const points = parseGPX(gpxText);
           
-          let pdeEncountered = [];
+          const proximityKm = 0.1;
+           let pdeEncountered = [];
 
   fetch('eau.json')
   .then(response => response.json())
@@ -247,9 +248,8 @@ const toiletsIcon = new L.Icon({
             } //for (const pt of points)
  } //if (loc.Display == 'Y')
   }); //locations.forEach
-    
-          const proximityKm = 0.1;
-          let townsEncountered = [];
+  }); //locations
+         let townsEncountered = [];
 
           towns.forEach((town) => {
             for (const pt of points) {
