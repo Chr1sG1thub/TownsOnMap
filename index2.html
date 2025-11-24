@@ -398,7 +398,7 @@ if (distAlong !== null) {
             L.marker([pe.Lat, pe.Lon], { icon: iconToUse }).addTo(window.map);
           }); //pdeEncountered.forEach
 
- var controlElevation = L.control.elevation({
+/* var controlElevation = L.control.elevation({
     position: "topright",
     theme: "steelblue-theme",
     width: 100,
@@ -407,7 +407,7 @@ if (distAlong !== null) {
     //followMarker: true,
     distanceUnit: "km",
     elevationUnit: "m"
-}).addTo(window.map);
+}).addTo(window.map); */
 
 console.log(Array.isArray(mypoints)); // should be true
 console.log(Object.prototype.toString.call(mypoints)); // should print [object 
@@ -431,7 +431,7 @@ const trackpointsArray = Array.from(mypoints);
           console.log(geojson);
 
 // Load the GeoJSON into the elevation control
-controlElevation.addData(geojson);
+//controlElevation.addData(geojson);
 
 
           // Show visited towns in results div
