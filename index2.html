@@ -230,7 +230,7 @@ const toiletsIcon = new L.Icon({
           } //if (!response.ok)
           
           const gpxText = await response.text();
-          const points = parseGPX(gpxText);
+          const mypoints = parseGPX(gpxText);
           
           const pdeproximityKm = 0.1;
            let pdeEncountered = [];
@@ -242,14 +242,14 @@ const toiletsIcon = new L.Icon({
 
  if (loc.Display == 'Y') {
 
-            for (const pt of points) {
+            for (const pt of mypoints) {
               if (
                 distance(pt.lat, pt.lon, loc.Lat, loc.Lon) <= pdeproximityKm
               ) {
                 pdeEncountered.push(loc);
                 break;
               } //if
-            } //for (const pt of points)
+            } //for (const pt of mypoints)
  } //if (loc.Display == 'Y')
   }); //locations.forEach
   }); //locations
@@ -258,14 +258,14 @@ const toiletsIcon = new L.Icon({
          let townsEncountered = [];
 
           towns.forEach((town) => {
-            for (const pt of points) {
+            for (const pt of mypoints) {
               if (
                 distance(pt.lat, pt.lon, town.Lat, town.Lon) <= townproximityKm
               ) {
                 townsEncountered.push(town);
                 break;
               } //if
-            } //for (const pt of points)
+            } //for (const pt of mypoints)
           }); //towns.forEach
 
           // Sort and deduplicate towns by Place name (and coordinates for safety)
@@ -406,13 +406,15 @@ if (distAlong !== null) {
     elevationUnit: "m"
 }).addTo(window.map);
 
+console.log(Array.isArray(mypoints)); // should be true
+console.log(Object.prototype.toString.call(mypoints)); // should print [object 
           const geojson = {
   type: 'FeatureCollection',
   features: [{
     type: 'Feature',
     geometry: {
       type: 'LineString',
-      coordinates: points.map(p => [p[2], p[1], p[0]]) // [lon, lat, ele]
+      coordinates: mypoints.map(p => [p[2], p[1], p[0]]) // [lon, lat, ele]
     },
     properties: {}
   }]
