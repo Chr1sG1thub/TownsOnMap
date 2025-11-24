@@ -415,7 +415,7 @@ const trackpointsArray = Array.from(mypoints);
     type: 'Feature',
     geometry: {
       type: 'LineString',
-      coordinates: trackpointsArray.map(p => [p[2], p[1], p[0]]) // [lon, lat, ele]
+      coordinates: trackpointsArray.map(p => [p.lon, p.lat, p.ele]) // [lon, lat, ele]
     },
     properties: {}
   }]
