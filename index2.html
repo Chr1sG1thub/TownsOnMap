@@ -408,13 +408,14 @@ if (distAlong !== null) {
 
 console.log(Array.isArray(mypoints)); // should be true
 console.log(Object.prototype.toString.call(mypoints)); // should print [object 
+const trackpointsArray = Array.from(mypoints);
           const geojson = {
   type: 'FeatureCollection',
   features: [{
     type: 'Feature',
     geometry: {
       type: 'LineString',
-      coordinates: mypoints.map(p => [p[2], p[1], p[0]]) // [lon, lat, ele]
+      coordinates: trackpointsArray.map(p => [p[2], p[1], p[0]]) // [lon, lat, ele]
     },
     properties: {}
   }]
