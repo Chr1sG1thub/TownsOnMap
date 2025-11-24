@@ -3,8 +3,16 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>TownsOnMap - Server GPX</title>
+    <title>TownsOnMap</title>
+    
     <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@netmust/leaflet-elevation@0.0.2/leaflet-elevation.min.css" />
+    
+    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet-gpx/2.2.0/gpx.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/leaflet-polylinedecorator@1.6.0/dist/leaflet.polylineDecorator.min.js"></script>
+    <script src="https://unpkg.com/@raruto/leaflet-elevation/dist/leaflet-elevation.js"></script>
+    
     <style>
       #map {
         height: 800px;
@@ -22,7 +30,6 @@
         font-weight: bold;
       }
     </style>
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@netmust/leaflet-elevation@0.0.2/leaflet-elevation.min.css" />
   </head>
   <body>
 <!--    <h1>Towns On Map (Load GPX from Server)</h1>
@@ -34,10 +41,6 @@
     <div id="map"></div>
 <!--    <div id="results"></div> -->
 
-    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet-gpx/2.2.0/gpx.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/leaflet-polylinedecorator@1.6.0/dist/leaflet.polylineDecorator.min.js"></script>
-    <script src="https://unpkg.com/@raruto/leaflet-elevation/dist/leaflet-elevation.js"></script>
 
     <script>
       // Global towns data placeholder
@@ -398,8 +401,8 @@ if (distAlong !== null) {
  var controlElevation = L.control.elevation({
     position: "topright",
     theme: "steelblue-theme",
-    width: 600,
-    height: 125,
+    width: 50,
+    height: 50,
     autopan: true,
     followMarker: true,
     distanceUnit: "km",
