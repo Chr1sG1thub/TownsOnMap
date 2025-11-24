@@ -60,7 +60,9 @@ function parseGPX(gpxText) {
     const lonStr = pt.getAttribute('lon');
     const lat = latStr ? parseFloat(latStr) : NaN;
     const lon = lonStr ? parseFloat(lonStr) : NaN;
-    return { lat, lon };
+    const eleEl = pt.querySelector('ele');
+    const ele = eleEl ? parseFloat(eleEl.textContent) : 0;
+   return { lat, lon, ele };
   }).filter(point => !isNaN(point.lat) && !isNaN(point.lon)); // Filter out any invalid points
 }
 
