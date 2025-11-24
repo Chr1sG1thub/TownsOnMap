@@ -393,6 +393,33 @@ if (distAlong !== null) {
             L.marker([pe.Lat, pe.Lon], { icon: iconToUse }).addTo(window.map);
           }); //pdeEncountered.forEach
 
+ var controlElevation = L.control.elevation({
+    position: "topright",
+    theme: "steelblue-theme",
+    width: 600,
+    height: 125,
+    autopan: true,
+    followMarker: true,
+    distanceUnit: "km",
+    elevationUnit: "m"
+}).addTo(map);
+
+          const geojson = {
+  type: 'FeatureCollection',
+  features: [{
+    type: 'Feature',
+    geometry: {
+      type: 'LineString',
+      coordinates: points.map(p => [p[2], p[1], p[0]]) // [lon, lat, ele]
+    },
+    properties: {}
+  }]
+};
+
+// Load the GeoJSON into the elevation control
+controlElevation.load(geojson);
+
+
           // Show visited towns in results div
 //          const resultsDiv = document.getElementById('results');
   //        resultsDiv.textContent = 'Towns visited:\n' + filteredTowns.map(t => t.Place).join('\n');
