@@ -489,7 +489,7 @@ new Chart(ctx, {
             borderColor: 'blue',
             fill: false
         }]
-    }/*,
+    },
     options: {
         scales: {
             y: {
@@ -498,13 +498,27 @@ new Chart(ctx, {
                 title: {
                     display: false,
                     text: 'Elevation (m)'
-                }
+                },
+                    ticks: {
+        display: false // hides y-axis values
+      },
+      grid: {
+        drawTicks: false // optional: hides tick marks on y-axis
+      }
+
             },
             x: {
                 title: {
                     display: false,
                     text: 'Distance (km)'
-                }
+                },
+                    ticks: {
+        display: false // hides y-axis values
+      },
+      grid: {
+        drawTicks: false // optional: hides tick marks on y-axis
+      }
+
             }
         }
     }
