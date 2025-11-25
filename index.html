@@ -394,7 +394,7 @@ distAlong = distanceToNearestVertex(poplatlngs, targetPoint, toleranceMeters, wi
               iconSize: [ft.Place.length * 10, 20],
               iconAnchor: [ft.Place.length * 5, 10],
             }); //const myIcon
-            L.marker([ft.Lat, ft.Lon], { icon: myIcon }).addTo(window.map);
+            L.marker([ft.nLat, ft.nLon], { icon: myIcon }).addTo(window.map);
           }); //filteredTowns.forEach
 
           pdeEncountered.forEach((pe) => {
