@@ -6,15 +6,11 @@
     <title>TownsOnMap</title>
     
     <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@netmust/leaflet-elevation@0.0.2/leaflet-elevation.min.css" />
     
     <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet-gpx/2.2.0/gpx.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/leaflet-polylinedecorator@1.6.0/dist/leaflet.polylineDecorator.min.js"></script>
-    <script src="https://unpkg.com/@raruto/leaflet-elevation/dist/leaflet-elevation.js"></script>
-    
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    
+        
     <style>
       #map {
         height: 800px;
@@ -41,18 +37,6 @@
     </p> -->
 
 <div id="map" style="position: relative; width: 100%; height: 800px;">
-  <!-- Your map goes here -->
-<!-- <div id="mycanvas" style="
-    position: absolute;
-    top: 10px; left: 10px;
-    width: 30%;
-    height: 30%;
-    z-index: 1000;
-    pointer-events: auto; /* so map interaction passes through */
-    background-color: rgba(255, 255, 255, 0.5); /* optional translucent background */
-  ">
-  <canvas id="profileChart"></canvas>
- </div> -->
 </div>
 <!--    <div id="results"></div> -->
     
@@ -60,13 +44,16 @@
       // Global towns data placeholder
       let towns = [];
 
-      // Utility: Get URL query parameter by name
+// -------------------------------------------------------------------------------
+      
       function getQueryParam(name) {
         const params = new URLSearchParams(window.location.search);
         return params.get(name);
       }
 
-function parseGPX(gpxText) {
+// -------------------------------------------------------------------------------
+
+  function parseGPX(gpxText) {
   const parser = new DOMParser();
   const xml = parser.parseFromString(gpxText, 'application/xml');
 
@@ -81,31 +68,11 @@ function parseGPX(gpxText) {
       mypts[i] = {};
     mypts[i].lat = latStr ? parseFloat(latStr) : NaN;
     mypts[i].lon = lonStr ? parseFloat(lonStr) : NaN;
-    const eleEl = trkpts[i].querySelector('ele');
-    mypts[i].ele = eleEl ? parseFloat(eleEl.textContent) : 0;
-    if (i == 0) {
-      mypts[i].dist = 0;
-    } else {
-      mypts[i].dist = mypts[i-1].dist + distance(mypts[i-1].lat, mypts[i-1].lon, mypts[i].lat, mypts[i].lon);
-    }
-      
-    //const dist = map.distance(latlngs[i], latlngs[i + 1]);
-    //distances.push(dist);
-    //totalDistance += dist;
   }
 return mypts;
-
-  // Map and parse lat/lon with fallback parseFloat (+ to convert string)
- // return trkpts.map(pt => {
- //   const latStr = pt.getAttribute('lat');
- //   const lonStr = pt.getAttribute('lon');
- //   const lat = latStr ? parseFloat(latStr) : NaN;
- //   const lon = lonStr ? parseFloat(lonStr) : NaN;
- //   const eleEl = pt.querySelector('ele');
- //   const ele = eleEl ? parseFloat(eleEl.textContent) : 0;
- //  return { lat, lon, ele };
- // }).filter(point => !isNaN(point.lat) && !isNaN(point.lon)); // Filter out any invalid points
 }
+
+// -------------------------------------------------------------------------------
 
       // Haversine distance in kilometers
       function distance(lat1, lon1, lat2, lon2) {
@@ -119,6 +86,8 @@ return mypts;
             Math.sin(dLon / 2) ** 2;
         return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
       }
+
+// -------------------------------------------------------------------------------
 
       // Find polylines inside a GPX layer (for arrow decoration)
       function findPolylinesInGPXLayer(gpxLayer) {
@@ -145,7 +114,9 @@ return mypts;
         return polylines;
       }
 
-  function interpolatePointOnLine(latlngs, ratio, map) {
+// -------------------------------------------------------------------------------
+
+      function interpolatePointOnLine(latlngs, ratio, map) {
   let totalDistance = 0;
   const distances = [];
 
@@ -176,6 +147,7 @@ return mypts;
   return latlngs[latlngs.length - 1];
 } //function interpolatePointOnLine
 
+// -------------------------------------------------------------------------------
       
 function distanceToNearestVertex(latlngs, target, tolerance, map) {
   let totalDistance = 0;
@@ -196,6 +168,8 @@ function distanceToNearestVertex(latlngs, target, tolerance, map) {
   return distanceAlong; // returns null if none within tolerance
 }
 
+// -------------------------------------------------------------------------------
+
       // Fetch towns data from your Google Apps Script endpoint
       async function getTowns() {
         const response = await fetch(
@@ -204,9 +178,13 @@ function distanceToNearestVertex(latlngs, target, tolerance, map) {
         return await response.json();
       }
 
-   let distAlong;
+// -------------------------------------------------------------------------------
+
+  let distAlong;
   let targetPoint;
       
+// -------------------------------------------------------------------------------
+
   async function loadGPXFromServer() {
 
   const waterIcon = new L.Icon({
@@ -387,11 +365,7 @@ let popup1 = L.popup()
 const toleranceMeters = 50;
 
 distAlong = distanceToNearestVertex(poplatlngs, targetPoint, toleranceMeters, window.map);
-if (distAlong !== null) {
-  console.log(`Nearest vertex is approximately ${distAlong.toFixed(1)} meters along the polyline.`);
-} else {
-  console.log('No vertex found within 50m of the target point.');
-}
+
 //               polyline.bindPopup('My path popup').openPopup();
          const cMarker = L.marker([coffeeLat, coffeeLon], { icon: coffeeIcon, zIndexOffset: 1000 }).addTo(window.map);
           const kms = Math.round(distAlong / 1000);
@@ -434,121 +408,14 @@ if (distAlong !== null) {
             L.marker([pe.Lat, pe.Lon], { icon: iconToUse }).addTo(window.map);
           }); //pdeEncountered.forEach
 
-/* var controlElevation = L.control.elevation({
-    position: "topright",
-    theme: "steelblue-theme",
-    width: 100,
-    height: 100,
-    //autopan: true,
-    //followMarker: true,
-    distanceUnit: "km",
-    elevationUnit: "m"
-}).addTo(window.map); */
-
-console.log(Array.isArray(mypoints)); // should be true
-console.log(Object.prototype.toString.call(mypoints)); // should print [object 
-
-          const testCoords = mypoints.map(p => [p.lon, p.lat, p.ele]);
-console.log(testCoords);
-          
-const trackpointsArray = Array.from(mypoints);
-          const geojson = {
-  type: 'FeatureCollection',
-  features: [{
-    type: 'Feature',
-    geometry: {
-      type: 'LineString',
-      coordinates: trackpointsArray.map(p => [p.lon, p.lat, p.ele]) // [lon, lat, ele]
-    },
-    properties: {}
-  }]
-};
-
-          console.log(geojson);
-
-// Load the GeoJSON into the elevation control
-//controlElevation.addData(geojson);
-
-          // Sample data
-//const distances = [0, 10, 20, 30, 40, 50]; // km
-//const elevations = [100, 150, 120, 200, 180, 130]; // meters
-
-// Calculate min and max elevation
-//const minElevation = Math.min(...elevations);
-//const maxElevation = Math.max(...elevations);
-let cutdowndist = [];
-let cutdownele = [];
-            let j = 0;
-          for (i = 0; i < mypoints.length-1; i++) {
-            if (i%10 == 0) {
-            cutdowndist[j] = mypoints[i].dist;
-            cutdownele[j] = mypoints[i].ele;
-              j = j + 1;
-            }
-          }
-
-// Create chart
-/*const ctx = document.getElementById('profileChart').getContext('2d');
-new Chart(ctx, {
-    type: 'line',
-    data: {
-//        labels: mypoints.map(m => m.dist),
-        labels: cutdowndist,
-        datasets: [{
-            label: 'Élévation',
-//            data: mypoints.map(m => m.ele),
-            data: cutdownele,
-            borderColor: 'blue',
-            fill: true,
-                pointRadius: 0,       // no circle on points
-        pointHoverRadius: 0   // no circle on hover
-        }]
-    },
-    options: {
-        scales: {
-            y: {
-           //     min: minElevation,
-           //     max: maxElevation,
-                title: {
-                    display: false,
-                    text: 'Elevation (m)'
-                },
-                    ticks: {
-        display: false // hides y-axis values
-      },
-      grid: {
-        drawTicks: false // optional: hides tick marks on y-axis
-      }
-
-            },
-            x: {
-                title: {
-                    display: false,
-                    text: 'Distance (km)'
-                },
-                    ticks: {
-        display: false // hides y-axis values
-      },
-      grid: {
-        drawTicks: false // optional: hides tick marks on y-axis
-      }
-
-            }
-        }
-    }
-}); */
-
-
-
-          // Show visited towns in results div
-//          const resultsDiv = document.getElementById('results');
-  //        resultsDiv.textContent = 'Towns visited:\n' + filteredTowns.map(t => t.Place).join('\n');
-        } catch (error) {
+       } catch (error) {
           alert('Error loading or processing GPX file.');
           console.error(error);
         } //try
       } //async function loadGPXFromServer
 
+      //----------------------------------------------------------------------------
+      
       // Main function to start everything
       async function main() {
         towns = await getTowns();
