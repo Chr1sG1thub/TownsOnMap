@@ -374,7 +374,9 @@ distAlong = distanceToNearestVertex(poplatlngs, targetPoint, toleranceMeters, wi
          const cMarker = L.marker([coffeeLat, coffeeLon], { icon: coffeeIcon, zIndexOffset: 1000 }).addTo(window.map);
           const kms = Math.round(distAlong / 1000);
                 
-          let popup2 = L.popup()
+          let popup2 = L.popup({
+  offset: [0, -10] // xOffset for horizontal, yOffset for vertical in pixels
+    })
           .setLatLng([coffeeLat, coffeeLon])
           .setContent("<span style='font-size: 10px'>Pause Café à "+kms+"km</span>")
           .addTo(window.map);
