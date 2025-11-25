@@ -392,7 +392,7 @@ distAlong = distanceToNearestVertex(poplatlngs, targetPoint, toleranceMeters, wi
               className: 'custom-div-icon',
               html: `<span style="color:red; background-color: yellow; white-space: nowrap; opacity: 0.8;"><strong>${ft.Place}</strong></span>`,
               iconSize: [ft.Place.length * 10, 20],
-              iconAnchor: [ft.Place.length * 5, 10],
+              iconAnchor: [ft.Place.length * 4, 8],
             }); //const myIcon
             L.marker([ft.nLat, ft.nLon], { icon: myIcon }).addTo(window.map);
           }); //filteredTowns.forEach
