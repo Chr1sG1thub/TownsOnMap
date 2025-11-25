@@ -476,18 +476,30 @@ const trackpointsArray = Array.from(mypoints);
 // Calculate min and max elevation
 //const minElevation = Math.min(...elevations);
 //const maxElevation = Math.max(...elevations);
+const cutdowndist[] = {};
+const cutdownelev[] = {};
+          for (i = 0; i < mypoints.length-1; i++) {
+            const j = 0;
+            if (i%10 == 0) {
+            cutdowndist(j) = mypoints[i].dist;
+            cutdownele(j) = mypoints[i].ele;
+              j = j + 1;
+            }
+          }
 
 // Create chart
 const ctx = document.getElementById('profileChart').getContext('2d');
 new Chart(ctx, {
     type: 'line',
     data: {
-        labels: mypoints.map(m => m.dist),
+//        labels: mypoints.map(m => m.dist),
+        labels: cutdowndist,
         datasets: [{
             label: 'Élévation',
-            data: mypoints.map(m => m.ele),
+//            data: mypoints.map(m => m.ele),
+            data: cutdownele,
             borderColor: 'blue',
-            fill: false
+            fill: true
         }]
     },
     options: {
