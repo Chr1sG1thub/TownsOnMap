@@ -56,7 +56,7 @@ function parseGPX(gpxText) {
   const parser = new DOMParser();
   const xml = parser.parseFromString(gpxText, 'application/xml');
 
-  let mypts[];
+  let mypts = [];
 
   // Use getElementsByTagName to avoid namespace issues
   const trkpts = Array.from(xml.getElementsByTagName('trkpt'));
