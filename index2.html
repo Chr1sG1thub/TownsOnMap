@@ -64,6 +64,7 @@ function parseGPX(gpxText) {
     for (let i = 0; i < trkpts.length - 1; i++) {
     const latStr = trkpts[i].getAttribute('lat');
     const lonStr = trkpts[i].getAttribute('lon');
+      mypts[i] = {};
     mypts[i].lat = latStr ? parseFloat(latStr) : NaN;
     mypts[i].lon = lonStr ? parseFloat(lonStr) : NaN;
     const eleEl = trkpts[i].querySelector('ele');
