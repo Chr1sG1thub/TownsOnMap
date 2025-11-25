@@ -471,10 +471,10 @@ const ctx = document.getElementById('profileChart').getContext('2d');
 new Chart(ctx, {
     type: 'line',
     data: {
-        labels: mypoints.dist,
+        labels: mypoints.map(m => m.dist),
         datasets: [{
             label: 'Elevation Profile',
-            data: mypoints.ele,
+            data: mypoints.map(m => m.ele),
             borderColor: 'blue',
             fill: false
         }]
