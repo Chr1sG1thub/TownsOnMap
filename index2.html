@@ -44,10 +44,11 @@
   <!-- Your map goes here -->
   <canvas id="profileChart" style="
     position: absolute;
-    top: 0; left: 0;
+    top: 10px; left: 10px;
     width: 30%;
     height: 30%;
-    pointer-events: none; /* so map interaction passes through */
+    z-index: 1000;
+    pointer-events: auto; /* so map interaction passes through */
     background-color: rgba(255, 255, 255, 0.5); /* optional translucent background */
   "></canvas>
 </div>
