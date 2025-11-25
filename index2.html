@@ -478,8 +478,8 @@ const trackpointsArray = Array.from(mypoints);
 //const maxElevation = Math.max(...elevations);
 let cutdowndist = [];
 let cutdownele = [];
-          for (i = 0; i < mypoints.length-1; i++) {
             let j = 0;
+          for (i = 0; i < mypoints.length-1; i++) {
             if (i%10 == 0) {
             cutdowndist[j] = mypoints[i].dist;
             cutdownele[j] = mypoints[i].ele;
