@@ -499,7 +499,9 @@ new Chart(ctx, {
 //            data: mypoints.map(m => m.ele),
             data: cutdownele,
             borderColor: 'blue',
-            fill: true
+            fill: true,
+                pointRadius: 0,       // no circle on points
+        pointHoverRadius: 0   // no circle on hover
         }]
     },
     options: {
