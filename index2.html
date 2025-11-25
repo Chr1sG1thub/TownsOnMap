@@ -64,19 +64,19 @@ function parseGPX(gpxText) {
     for (let i = 0; i < trkpts.length - 1; i++) {
     const latStr = trkpts[i].getAttribute('lat');
     const lonStr = trkpts[i].getAttribute('lon');
-    const mypts[i].lat = latStr ? parseFloat(latStr) : NaN;
-    const mypts[i].lon = lonStr ? parseFloat(lonStr) : NaN;
+    mypts[i].lat = latStr ? parseFloat(latStr) : NaN;
+    mypts[i].lon = lonStr ? parseFloat(lonStr) : NaN;
     const eleEl = trkpts[i].querySelector('ele');
-    const mypts[i].ele = eleEl ? parseFloat(eleEl.textContent) : 0;
+    mypts[i].ele = eleEl ? parseFloat(eleEl.textContent) : 0;
     if (i == 0) {
       mypts[i].dist = 0;
     } else {
       mypts[i].dist = mypts[i-1].dist + distance(mypts[i-1].lat, mypts[i-1].lon, mypts[i].lat, mypts[i].lon);
     }
       
-    const dist = map.distance(latlngs[i], latlngs[i + 1]);
-    distances.push(dist);
-    totalDistance += dist;
+    //const dist = map.distance(latlngs[i], latlngs[i + 1]);
+    //distances.push(dist);
+    //totalDistance += dist;
   }
 return mypts;
 
