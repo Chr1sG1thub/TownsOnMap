@@ -36,7 +36,11 @@
       Example: <code>?gpxFile=path/to/your/file.gpx</code>
     </p> -->
 
-<div id="map" style="position: relative; width: 100%; height: 800px;">
+    <div id="nothing" style="display: block">
+      <br/><p align=center style="font-size: 54px; color: blue;"><strong><i>Attendez, SVP...</i></strong></p>   
+    </div>
+    
+<div id="map" style="position: relative; width: 100%; height: 800px; display: none">
 </div>
 <!--    <div id="results"></div> -->
     
@@ -420,7 +424,9 @@ distAlong = distanceToNearestVertex(poplatlngs, targetPoint, toleranceMeters, wi
       async function main() {
         towns = await getTowns();
         await loadGPXFromServer();
-      }
+        document.getElementById("nothing").style.display = 'none';
+      document.getElementById("map").style.display = 'block';
+     }
 
       main();
     </script>
