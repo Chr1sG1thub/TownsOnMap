@@ -393,7 +393,7 @@ distAlong = distanceToNearestVertex(poplatlngs, targetPoint, toleranceMeters, wi
           filteredTowns.forEach((ft) => {
             const myIcon = L.divIcon({
               className: 'custom-div-icon',
-              html: `<span style="color:red; background-color: yellow; line-height: 0.8; display: inline-block; opacity: 0.8;"><strong>${ft.Place}</strong></span>`,
+              html: `<span style="color:red; background-color: yellow; line-height: 0.9; display: inline-block; text-align: center; opacity: 0.8;"><strong>${ft.Place}</strong></span>`,
               iconSize: [ft.Place.length * 10, 20],
               iconAnchor: [ft.Place.length * 3, 7],
               
