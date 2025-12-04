@@ -233,6 +233,24 @@ const toiletsIcon = new L.Icon({
   iconAnchor: [15, 15],
 }); //const coffeeIcon
 
+       L.Symbol.arrow = function(options) {
+  return L.Symbol.extend({
+    createSymbol: function(ctx) {
+      ctx.save();
+      var size = options.pixelSize || 10;
+      ctx.beginPath();
+      ctx.moveTo(0, size / 2);
+      ctx.lineTo(size, 0);
+      ctx.lineTo(0, -size / 2);
+      ctx.closePath();
+      ctx.fillStyle = options.color || 'black';
+      ctx.fill();
+      ctx.restore();
+    }
+  });
+};
+
+
         const coffeeLat = getQueryParam('clat');
        const coffeeLon = getQueryParam('clon');
        const dist = getQueryParam('dist');
@@ -334,22 +352,6 @@ const toiletsIcon = new L.Icon({
               window.map.fitBounds(gpxLayer.getBounds());
 
  
-   L.Symbol.arrow = function(options) {
-  return L.Symbol.extend({
-    createSymbol: function(ctx) {
-      ctx.save();
-      var size = options.pixelSize || 10;
-      ctx.beginPath();
-      ctx.moveTo(0, size / 2);
-      ctx.lineTo(size, 0);
-      ctx.lineTo(0, -size / 2);
-      ctx.closePath();
-      ctx.fillStyle = options.color || 'black';
-      ctx.fill();
-      ctx.restore();
-    }
-  });
-};
            const polylines = findPolylinesInGPXLayer(gpxLayer);
               
               polylines.forEach((polyline) => {
