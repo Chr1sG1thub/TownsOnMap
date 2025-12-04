@@ -234,7 +234,7 @@ const toiletsIcon = new L.Icon({
 }); //const coffeeIcon
 
        L.Symbol.arrow = function(options) {
-  return L.Symbol.extend({
+  return L.Symbol.Dash.extend({
     createSymbol: function(ctx) {
       ctx.save();
       var size = options.pixelSize || 10;
