@@ -294,6 +294,9 @@ function distanceToNearestVertex(latlngs, target, toleranceMeters, mapInstance) 
       const dist = getQueryParam('dist');
       const deniv = getQueryParam('deniv');
 
+      if (!filename) {
+        document.getElementById('controls').style.display = "block";
+      }
       towns = await getTowns();
       
 /*      statusEl.innerHTML = `
@@ -320,7 +323,6 @@ function distanceToNearestVertex(latlngs, target, toleranceMeters, mapInstance) 
       };
 
       if (!filename) {
-        document.getElementById('controls').style.display = "block";
   //      statusEl.innerHTML += '<br>Loading GPX from server: gpx/' + filename + '...';
         try {
           const response = await fetch(`gpx/${filename}`);
