@@ -319,6 +319,7 @@ function distanceToNearestVertex(latlngs, target, toleranceMeters, mapInstance) 
       };
 
       if (filename) {
+        document.getElementById('controls').style.display = "none";
   //      statusEl.innerHTML += '<br>Loading GPX from server: gpx/' + filename + '...';
         try {
           const response = await fetch(`gpx/${filename}`);
