@@ -128,16 +128,16 @@ function distanceToNearestVertex(latlngs, target, toleranceMeters, mapInstance) 
     }
   }
 
-  console.log(`Coffee closest: ${minDistanceKm*1000}m (${minDistanceKm}km) at index ${nearestIndex}`);
+  console.log(`Coffee closest: ${minDistanceKm}m at index ${nearestIndex}`);
 
   // Check if within tolerance (convert toleranceMeters to KM)
-  if (minDistanceKm <= toleranceMeters / 1000) {
+  if (minDistanceKm <= toleranceMeters) {
     // Calculate distance along track from start to nearest point (in KM)
     for (let i = 0; i < nearestIndex; i++) {
       totalDistanceKm += mapInstance.distance(latlngs[i], latlngs[i + 1]);
     }
-    console.log(`Distance along track: ${totalDistanceKm.toFixed(2)} km`);
-    return totalDistanceKm * 1000;  // Return METERS for display logic
+    console.log(`Distance along track: ${totalDistanceKm.toFixed(2)} m`);
+    return totalDistanceKm;  // Return METERS for display logic
   }
   
   console.log('Coffee outside 50m tolerance');
