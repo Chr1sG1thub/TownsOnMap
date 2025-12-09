@@ -322,7 +322,7 @@ function distanceToNearestVertex(latlngs, target, toleranceMeters, mapInstance) 
         }
       };
 
-      if (!filename) {
+      if (filename) {
   //      statusEl.innerHTML += '<br>Loading GPX from server: gpx/' + filename + '...';
         try {
           const response = await fetch(`gpx/${filename}`);
