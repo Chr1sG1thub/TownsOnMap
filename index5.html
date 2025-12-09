@@ -121,7 +121,7 @@ function distanceToNearestVertex(latlngs, target, toleranceMeters, mapInstance) 
 
   // Find closest point within tolerance (using KM)
   for (let i = 0; i < latlngs.length; i++) {
-    const distKm = mapInstance.distance(latlngs[i], target);  // Leaflet returns KM
+    const distKm = mapInstance.distance(latlngs[i], target)/1000;  // Leaflet returns KM
     if (distKm < minDistanceKm) {
       minDistanceKm = distKm;
       nearestIndex = i;
