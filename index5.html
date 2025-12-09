@@ -113,36 +113,36 @@
       return latlngs[latlngs.length - 1];
     }
 
-    // FIXED: distanceToNearestVertex - now returns correct km value
-    function distanceToNearestVertex(latlngs, target, toleranceMeters, mapInstance) {
-      let totalDistanceKm = 0;
-      let minDistance = Infinity;
-      let nearestIndex = -1;
+ // FIXED: Proper units handling
+function distanceToNearestVertex(latlngs, target, toleranceMeters, mapInstance) {
+  let totalDistanceKm = 0;  // Track distance in KM
+  let minDistanceKm = Infinity;
+  let nearestIndex = -1;
 
-      // Find closest point within tolerance
-      for (let i = 0; i < latlngs.length; i++) {
-        const dist = mapInstance.distance(latlngs[i], target);
-        if (dist < minDistance) {
-          minDistance = dist;
-          nearestIndex = i;
-        }
-      }
-
-      console.log(`Coffee closest distance: ${minDistance*1000}m at index ${nearestIndex}`);
-
-      // If within tolerance, calculate distance along track
-      if (minDistance <= toleranceMeters / 1000) {
-        // Calculate distance from start to nearest point
-        for (let i = 0; i < nearestIndex; i++) {
-          totalDistanceKm += mapInstance.distance(latlngs[i], latlngs[i + 1]);
-        }
-        console.log(`Distance along track: ${totalDistanceKm} km`);
-        return totalDistanceKm * 1000; // Return in meters
-      }
-      
-      console.log('Coffee point outside tolerance');
-      return null;
+  // Find closest point within tolerance (using KM)
+  for (let i = 0; i < latlngs.length; i++) {
+    const distKm = mapInstance.distance(latlngs[i], target);  // Leaflet returns KM
+    if (distKm < minDistanceKm) {
+      minDistanceKm = distKm;
+      nearestIndex = i;
     }
+  }
+
+  console.log(`Coffee closest: ${minDistanceKm*1000}m (${minDistanceKm}km) at index ${nearestIndex}`);
+
+  // Check if within tolerance (convert toleranceMeters to KM)
+  if (minDistanceKm <= toleranceMeters / 1000) {
+    // Calculate distance along track from start to nearest point (in KM)
+    for (let i = 0; i < nearestIndex; i++) {
+      totalDistanceKm += mapInstance.distance(latlngs[i], latlngs[i + 1]);
+    }
+    console.log(`Distance along track: ${totalDistanceKm.toFixed(2)} km`);
+    return totalDistanceKm * 1000;  // Return METERS for display logic
+  }
+  
+  console.log('Coffee outside 50m tolerance');
+  return null;
+}
 
     async function getTowns() {
       try {
