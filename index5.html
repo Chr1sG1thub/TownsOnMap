@@ -24,7 +24,7 @@
 <body>
   <div id="controls" class="controls">
     <input type="file" id="gpxFile" accept=".gpx" style="margin-right: 10px;">
-    <span id="urlStatus">Checking URL parameters...</span>
+    <!-- <span id="urlStatus">Checking URL parameters...</span> -->
   </div>
   
   <div id="map"></div>
@@ -315,7 +315,7 @@ function distanceToNearestVertex(latlngs, target, toleranceMeters, mapInstance) 
           const gpxText = await file.text();
           await loadGPXWithText(gpxText, coffeeLat, coffeeLon, dist, deniv);
  //         statusEl.innerHTML = 'Local GPX loaded successfully!';
- //       }
+        }
       };
 
       if (filename) {
