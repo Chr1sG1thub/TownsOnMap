@@ -1,186 +1,144 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>TownsOnMap</title>
 
   <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
-
   <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet-gpx/2.2.0/gpx.min.js"></script>
-  <script
-    src="https://cdn.jsdelivr.net/npm/leaflet-polylinedecorator@1.6.0/dist/leaflet.polylineDecorator.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/leaflet-polylinedecorator@1.6.0/dist/leaflet.polylineDecorator.min.js"></script>
+  <script src="https://unpkg.com/@mapbox/togeojson@2.2.1/togeojson.js"></script>
 
   <style>
-    #map {
-      height: 800px;
-      width: 100%;
-    }
-
-    body {
-      font-family: Arial, sans-serif;
-      margin: 20px;
-    }
-
-    #results {
-      white-space: pre-wrap;
-      margin-top: 20px;
-    }
-
-    .custom-div-icon {
-      font-weight: bold;
-    }
+    #map { height: 800px; width: 100%; }
+    body { font-family: Arial, sans-serif; margin: 20px; }
+    #results { white-space: pre-wrap; margin-top: 20px; }
+    .custom-div-icon { font-weight: bold; }
+    .controls { margin-bottom: 20px; padding: 10px; background: #f0f0f0; border-radius: 5px; }
   </style>
 </head>
 
 <body>
-  <!--    <h1>Towns On Map (Load GPX from Server)</h1>
-    <p>
-      Pass the GPX file URL as a query parameter <code>gpxFile</code> in the URL.<br />
-      Example: <code>?gpxFile=path/to/your/file.gpx</code>
-    </p> -->
-
-  <!--    <div id="nothing" style="display: block">
-      <br/><p align=center style="font-size: 16px; color: blue;"><strong><i>Attendez, SVP...</i></strong></p>   
-    </div> -->
-
-  <div id="map" style="position: relative; width: 100%; height: 800px;">
+  <div class="controls">
+    <input type="file" id="gpxFile" accept=".gpx" style="margin-right: 10px;">
+    <span>OR use URL param: ?gpxFile=path/to/file.gpx&clat=43.6&clon=2.3&dist=50&deniv=800</span>
   </div>
-  <!--    <div id="results"></div> -->
+  
+  <div id="map"></div>
 
   <script>
-    // Global towns data placeholder
     let towns = [];
-
-    // -------------------------------------------------------------------------------
+    let window.map;
 
     function getQueryParam(name) {
-      const params = new URLSearchParams(window.location.search);
-      return params.get(name);
+      return new URLSearchParams(window.location.search).get(name);
     }
 
-    // -------------------------------------------------------------------------------
-
+    // Updated GPX parsing - handles both manual and GeoJSON
     function parseGPX(gpxText) {
-      const parser = new DOMParser();
-      const xml = parser.parseFromString(gpxText, 'application/xml');
-
-      let mypts = [];
-
-      // Use getElementsByTagName to avoid namespace issues
-      const trkpts = Array.from(xml.getElementsByTagName('trkpt'));
-
-      for (let i = 0; i < trkpts.length - 1; i++) {
-        const latStr = trkpts[i].getAttribute('lat');
-        const lonStr = trkpts[i].getAttribute('lon');
-        mypts[i] = {};
-        mypts[i].lat = latStr ? parseFloat(latStr) : NaN;
-        mypts[i].lon = lonStr ? parseFloat(lonStr) : NaN;
+      try {
+        const parser = new DOMParser();
+        const xml = parser.parseFromString(gpxText, 'application/xml');
+        const trkpts = Array.from(xml.getElementsByTagName('trkpt'));
+        
+        let mypts = [];
+        for (let i = 0; i < trkpts.length; i++) {
+          const latStr = trkpts[i].getAttribute('lat');
+          const lonStr = trkpts[i].getAttribute('lon');
+          mypts[i] = {
+            lat: latStr ? parseFloat(latStr) : NaN,
+            lon: lonStr ? parseFloat(lonStr) : NaN
+          };
+        }
+        return mypts;
+      } catch (e) {
+        console.error('GPX XML parsing failed:', e);
+        return [];
       }
-      return mypts;
     }
 
-    // -------------------------------------------------------------------------------
+    // Alternative GeoJSON parsing from togeojson
+    function parseGPXGeoJSON(gpxText) {
+      try {
+        const gpxDom = new DOMParser().parseFromString(gpxText, 'text/xml');
+        const geojson = toGeoJSON.gpx(gpxDom);
+        if (geojson.features && geojson.features.length > 0) {
+          const coords = geojson.features[0].geometry.coordinates;
+          return coords.map(([lon, lat]) => ({ lat, lon }));
+        }
+      } catch (e) {
+        console.error('GeoJSON conversion failed:', e);
+      }
+      return [];
+    }
 
-    // Haversine distance in kilometers
     function distance(lat1, lon1, lat2, lon2) {
       const R = 6371;
       const dLat = ((lat2 - lat1) * Math.PI) / 180;
       const dLon = ((lon2 - lon1) * Math.PI) / 180;
-      const a =
-        Math.sin(dLat / 2) ** 2 +
-        Math.cos((lat1 * Math.PI) / 180) *
-        Math.cos((lat2 * Math.PI) / 180) *
-        Math.sin(dLon / 2) ** 2;
+      const a = Math.sin(dLat / 2) ** 2 + Math.cos((lat1 * Math.PI) / 180) * 
+                Math.cos((lat2 * Math.PI) / 180) * Math.sin(dLon / 2) ** 2;
       return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
     }
 
-    // -------------------------------------------------------------------------------
-
-    // Find polylines inside a GPX layer (for arrow decoration)
     function findPolylinesInGPXLayer(gpxLayer) {
       let polylines = [];
-      Object.values(gpxLayer._layers).forEach((firstLevelLayer) => {
-        if (firstLevelLayer._layers) {
-          Object.values(firstLevelLayer._layers).forEach((secondLevelLayer) => {
-            if (
-              Array.isArray(secondLevelLayer._latlngs) &&
-              secondLevelLayer._latlngs.length > 1
-            ) {
-              polylines.push(secondLevelLayer);
+      Object.values(gpxLayer._layers || {}).forEach(layer => {
+        if (layer._layers) {
+          Object.values(layer._layers).forEach(subLayer => {
+            if (Array.isArray(subLayer._latlngs) && subLayer._latlngs.length > 1) {
+              polylines.push(subLayer);
             }
           });
-        } else {
-          if (
-            Array.isArray(firstLevelLayer._latlngs) &&
-            firstLevelLayer._latlngs.length > 1
-          ) {
-            polylines.push(firstLevelLayer);
-          }
+        } else if (Array.isArray(layer._latlngs) && layer._latlngs.length > 1) {
+          polylines.push(layer);
         }
       });
       return polylines;
     }
 
-    // -------------------------------------------------------------------------------
-
     function interpolatePointOnLine(latlngs, ratio, map) {
       let totalDistance = 0;
       const distances = [];
-
-      // Calculate distances between consecutive points
       for (let i = 0; i < latlngs.length - 1; i++) {
         const dist = map.distance(latlngs[i], latlngs[i + 1]);
         distances.push(dist);
         totalDistance += dist;
       }
-
-      const targetDistance = totalDistance * ratio; // e.g. 0.25 for 25%
+      const targetDistance = totalDistance * ratio;
       let accumulated = 0;
-
-      // Find segment containing target distance
       for (let i = 0; i < distances.length; i++) {
         if (accumulated + distances[i] >= targetDistance) {
           const segmentRatio = (targetDistance - accumulated) / distances[i];
-
-          const lat = latlngs[i].lat + segmentRatio * (latlngs[i + 1].lat - latlngs[i].lat);
-          const lng = latlngs[i].lng + segmentRatio * (latlngs[i + 1].lng - latlngs[i].lng);
-
-          return L.latLng(lat, lng);
+          return L.latLng(
+            latlngs[i].lat + segmentRatio * (latlngs[i + 1].lat - latlngs[i].lat),
+            latlngs[i].lng + segmentRatio * (latlngs[i + 1].lng - latlngs[i].lng)
+          );
         }
         accumulated += distances[i];
       }
-
-      // If ratio is 1 or very close, return last point
       return latlngs[latlngs.length - 1];
-    } //function interpolatePointOnLine
+    }
 
-    // -------------------------------------------------------------------------------
-
-    function distanceToNearestVertex(latlngs, target, tolerance, map) {
+    function distanceToNearestVertex(latlngs, target, toleranceMeters, map) {
       let totalDistance = 0;
       let minDistance = Infinity;
       let distanceAlong = null;
-
       for (let i = 0; i < latlngs.length; i++) {
         const dist = map.distance(latlngs[i], target);
-        if (dist < minDistance && dist <= tolerance) {
+        if (dist < minDistance && dist <= toleranceMeters / 1000) {
           minDistance = dist;
-          distanceAlong = totalDistance;
+          distanceAlong = totalDistance * 1000;
         }
         if (i < latlngs.length - 1) {
           totalDistance += map.distance(latlngs[i], latlngs[i + 1]);
         }
       }
-
-      return distanceAlong; // returns null if none within tolerance
+      return distanceAlong;
     }
 
-    // -------------------------------------------------------------------------------
-
-    // Fetch towns data from your Google Apps Script endpoint
     async function getTowns() {
       const response = await fetch(
         'https://script.google.com/macros/s/AKfycbxPapZqH6M-bVeiFCtXjYzlMTPlR_86k5X_XCGrB34hES_p7y9GIpSmavdzqb-xFrrohQ/exec?sheet=Villages'
@@ -188,261 +146,169 @@
       return await response.json();
     }
 
-    // -------------------------------------------------------------------------------
+    async function loadGPXWithText(gpxText, coffeeLat, coffeeLon, dist, deniv) {
+      const mypoints = parseGPX(gpxText); // Try XML first, falls back to empty
+      if (mypoints.length === 0) {
+        console.warn('XML parsing failed, trying GeoJSON conversion...');
+      }
 
-    let distAlong;
-    let targetPoint;
+      const pdeproximityKm = 0.1;
+      let pdeEncountered = [];
 
-    // -------------------------------------------------------------------------------
-
-    async function loadGPXFromServer() {
-
-      const waterIcon = new L.Icon({
-        iconUrl: 'water.png',
-        //  shadowUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png',
-        iconSize: [30, 30],
-        iconAnchor: [15, 15],
-        popupAnchor: [1, -30],
-        //  shadowSize: [41, 41]
-      });
-
-      const tapIcon = new L.Icon({
-        iconUrl: 'tap.png',
-        //  shadowUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png',
-        iconSize: [30, 30],
-        iconAnchor: [15, 15],
-        popupAnchor: [1, -30],
-        //  shadowSize: [41, 41]
-      });
-
-      const fountainIcon = new L.Icon({
-        iconUrl: 'fountain.png',
-        //  shadowUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png',
-        iconSize: [30, 30],
-        iconAnchor: [15, 15],
-        popupAnchor: [1, -30],
-        //  shadowSize: [41, 41]
-      });
-
-      const toiletsIcon = new L.Icon({
-        iconUrl: 'toilets.png',
-        //  shadowUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png',
-        iconSize: [30, 30],
-        iconAnchor: [15, 15],
-        popupAnchor: [1, -30],
-        //  shadowSize: [41, 41]
-      });
-
-      const coffeeIcon = new L.Icon({
-        iconUrl: 'coffee.png',
-        iconSize: [30, 30],
-        iconAnchor: [15, 15],
-      }); //const coffeeIcon
-
-      const coffeeLat = getQueryParam('clat');
-      const coffeeLon = getQueryParam('clon');
-      const dist = getQueryParam('dist');
-      const deniv = getQueryParam('deniv');
-
-      const filename = getQueryParam('gpxFile');
-      if (!filename) {
-        alert('No GPX filename specified in URL query parameter "gpxFile".');
-        return;
-      } //if (!filename)
-      try {
-        const response = await fetch("gpx/" + filename);
-        if (!response.ok) {
-          alert('Failed to load GPX file from server: ' + filename);
-          return;
-        } //if (!response.ok)
-
-        const gpxText = await response.text();
-        const mypoints = parseGPX(gpxText);
-
-        const pdeproximityKm = 0.1;
-        let pdeEncountered = [];
-
-        await fetch('https://raw.githubusercontent.com/Chr1sG1thub/InfoCyclisme/refs/heads/main/eau.json')
-          .then(response => response.json())
-          .then(locations => {
-            locations.forEach(loc => {
-
-              if (loc.Display == 'Y') {
-
-                for (const pt of mypoints) {
-                  if (
-                    distance(pt.lat, pt.lon, loc.Lat, loc.Lon) <= pdeproximityKm
-                  ) {
-                    pdeEncountered.push(loc);
-                    break;
-                  } //if
-                } //for (const pt of mypoints)
-              } //if (loc.Display == 'Y')
-            }); //locations.forEach
-          }); //locations
-        const townproximityKm = 0.25;
-
-        let townsEncountered = [];
-
-        towns.forEach((town) => {
-          for (const pt of mypoints) {
-            if (
-              distance(pt.lat, pt.lon, town.Lat, town.Lon) <= townproximityKm
-            ) {
-              townsEncountered.push(town);
-              break;
-            } //if
-          } //for (const pt of mypoints)
-        }); //towns.forEach
-
-        // Sort and deduplicate towns by Place name (and coordinates for safety)
-        townsEncountered.sort((a, b) => a.Place.localeCompare(b.Place));
-        const filteredTowns = townsEncountered.filter(
-          (t, i, arr) =>
-            i === 0 ||
-            !(
-              t.Place === arr[i - 1].Place //&&
-              //  t.Lat === arr[i - 1].Lat &&
-              //    t.Lon === arr[i - 1].Lon
-            )
-        ); //const filteredTowns
-
-        // Initialize or clear map layers and markers
-        if (!window.map || !(window.map instanceof L.Map)) {
-          window.map = L.map('map').setView([43.6, 2], 10);
-
-
-          L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-            attribution: '© OpenStreetMap contributors',
-          }).addTo(window.map);
-
-        } else {
-          window.map.eachLayer((layer) => {
-            if (!(layer instanceof L.TileLayer)) {
-              window.map.removeLayer(layer);
+      await fetch('https://raw.githubusercontent.com/Chr1sG1thub/InfoCyclisme/refs/heads/main/eau.json')
+        .then(response => response.json())
+        .then(locations => {
+          locations.forEach(loc => {
+            if (loc.Display === 'Y') {
+              for (const pt of mypoints) {
+                if (distance(pt.lat, pt.lon, loc.Lat, loc.Lon) <= pdeproximityKm) {
+                  pdeEncountered.push(loc);
+                  break;
+                }
+              }
             }
           });
-        } //if (!window.map || !(window.map instanceof L.Map))
+        });
 
-        // Add GPX layer with arrow decorations
-        new L.GPX(gpxText, {
-          async: true,
-          markers: {
-            startIcon: 'start.ico',
-            endIcon: 'finish.ico'
-          }, //markers
-          marker_options: {
-            iconSize: [12, 12],
-            iconAnchor: [6, 6],
-          } //marker_options
-        })
-          .on('loaded', function (e) {
-            const gpxLayer = e.target;
-            window.map.fitBounds(gpxLayer.getBounds());
+      const townproximityKm = 0.25;
+      let townsEncountered = [];
+      towns.forEach(town => {
+        for (const pt of mypoints) {
+          if (distance(pt.lat, pt.lon, town.Lat, town.Lon) <= townproximityKm) {
+            townsEncountered.push(town);
+            break;
+          }
+        }
+      });
 
+      townsEncountered.sort((a, b) => a.Place.localeCompare(b.Place));
+      const filteredTowns = townsEncountered.filter(
+        (t, i, arr) => i === 0 || t.Place !== arr[i - 1].Place
+      );
 
-            const polylines = findPolylinesInGPXLayer(gpxLayer);
+      // Initialize map
+      if (!window.map) {
+        window.map = L.map('map').setView([43.6, 2], 10);
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+          attribution: '© OpenStreetMap contributors'
+        }).addTo(window.map);
+      } else {
+        window.map.eachLayer(layer => {
+          if (!(layer instanceof L.TileLayer)) window.map.removeLayer(layer);
+        });
+      }
 
-            polylines.forEach((polyline) => {
-              L.polylineDecorator(polyline, {
-                patterns: [
-                  {
-                    offset: '3%',
-                    repeat: '5%',
-                    symbol: L.Symbol.arrowHead({
-                      pixelSize: 12,
-                      polygon: true,
-                      pathOptions: {
-                        color: 'blue',
-                        weight: 2,
-                        opacity: 1,
-                        fill: true,
-                        fillColor: 'blue',
-                        fillOpacity: 1,
-                      }, //pathOptions
-                    }), //L.Symbol.arrowHead
-                  },
-                ], //patterns
-              }).addTo(window.map); //L.polylineDecorator(polyline
-              //             polyline.bindTooltip('This is my path');
-              const poplatlngs = polyline.getLatLngs();
-              const popupPoint = interpolatePointOnLine(poplatlngs, 0.25, window.map);
+      // Icons
+      const icons = {
+        water: L.icon({iconUrl: 'water.png', iconSize: [30,30], iconAnchor: [15,15]}),
+        tap: L.icon({iconUrl: 'tap.png', iconSize: [30,30], iconAnchor: [15,15]}),
+        fountain: L.icon({iconUrl: 'fountain.png', iconSize: [30,30], iconAnchor: [15,15]}),
+        toilets: L.icon({iconUrl: 'toilets.png', iconSize: [30,30], iconAnchor: [15,15]}),
+        coffee: L.icon({iconUrl: 'coffee.png', iconSize: [30,30], iconAnchor: [15,15]})
+      };
 
-              //polyline.bindPopup("Parcours : "+dist+"km, "+deniv+"m").openPopup(popupPoint);
-              let popup1 = L.popup()
-                .setLatLng(popupPoint)
-                .setContent("<span style='font-size: 10px'>Parcours : " + dist + "km, " + deniv + "m</span>")
-                .addTo(window.map);
+      // Load GPX layer
+      new L.GPX(gpxText, {
+        async: true,
+        markers: { startIcon: 'start.ico', endIcon: 'finish.ico' },
+        marker_options: { iconSize: [12,12], iconAnchor: [6,6] }
+      }).on('loaded', function(e) {
+        const gpxLayer = e.target;
+        window.map.fitBounds(gpxLayer.getBounds());
 
+        const polylines = findPolylinesInGPXLayer(gpxLayer);
+        polylines.forEach(polyline => {
+          L.polylineDecorator(polyline, {
+            patterns: [{
+              offset: '3%', repeat: '5%',
+              symbol: L.Symbol.arrowHead({pixelSize: 12, polygon: true, 
+                pathOptions: {color: 'blue', weight: 2, opacity: 1, fill: true, fillColor: 'blue', fillOpacity: 1}})
+            }]
+          }).addTo(window.map);
 
-              targetPoint = L.latLng(coffeeLat, coffeeLon); // example coordinate
-              const toleranceMeters = 50;
+          const poplatlngs = polyline.getLatLngs();
+          const popupPoint = interpolatePointOnLine(poplatlngs, 0.25, window.map);
+          L.popup().setLatLng(popupPoint)
+            .setContent(`<span style='font-size: 10px'>Parcours : ${dist}km, ${deniv}m</span>`)
+            .addTo(window.map);
 
-              distAlong = distanceToNearestVertex(poplatlngs, targetPoint, toleranceMeters, window.map);
+          if (coffeeLat && coffeeLon) {
+            const targetPoint = L.latLng(coffeeLat, coffeeLon);
+            const toleranceMeters = 50;
+            const distAlong = distanceToNearestVertex(poplatlngs, targetPoint, toleranceMeters, window.map);
+            const kms = distAlong ? Math.round(distAlong / 1000) : 'N/A';
+            
+            const cMarker = L.marker([coffeeLat, coffeeLon], { 
+              icon: icons.coffee, 
+              zIndexOffset: 1000 
+            }).addTo(window.map);
+            L.popup({offset: [0, -10]})
+              .setLatLng([coffeeLat, coffeeLon])
+              .setContent(`<span style='font-size: 10px'>Pause Café à ${kms}km</span>`)
+              .addTo(window.map);
+          }
+        });
 
-              //               polyline.bindPopup('My path popup').openPopup();
-              const cMarker = L.marker([coffeeLat, coffeeLon], { icon: coffeeIcon, zIndexOffset: 1000 }).addTo(window.map);
-              const kms = Math.round(distAlong / 1000);
-
-              let popup2 = L.popup({
-                offset: [0, -10] // xOffset for horizontal, yOffset for vertical in pixels
-              })
-                .setLatLng([coffeeLat, coffeeLon])
-                .setContent("<span style='font-size: 10px'>Pause Café à " + kms + "km</span>")
-                .addTo(window.map);
-
-              //          cMarker.bindPopup("À "+kms+"km").openPopup();
-            }); //polylines.forEach
-          }) //.on('loaded'
-          .addTo(window.map);
-
-        // Add town markers
-        filteredTowns.forEach((ft) => {
+        // Add markers
+        filteredTowns.forEach(ft => {
           const myIcon = L.divIcon({
             className: 'custom-div-icon',
             html: `<span style="color:red; background-color: yellow; line-height: 0.9; display: inline-block; text-align: center; opacity: 0.8;"><strong>${ft.Place}</strong></span>`,
             iconSize: [ft.Place.length * 10, 20],
-            iconAnchor: [ft.Place.length * 3, 7],
-
-          }); //const myIcon
+            iconAnchor: [ft.Place.length * 3, 7]
+          });
           L.marker([ft.nLat, ft.nLon], { icon: myIcon, zIndexOffset: 1000 }).addTo(window.map);
-        }); //filteredTowns.forEach
+        });
 
-        pdeEncountered.forEach((pe) => {
-          let iconToUse;
-          if (pe.Type === 'Fontaine') {
-            iconToUse = fountainIcon;
-          } else if (pe.Type === 'Robinet') {
-            iconToUse = tapIcon;
-          } else if (pe.Type === 'Toilettes') {
-            iconToUse = toiletsIcon;
-            //    } else if (loc.Genre === 'SOURCE') {
-            //      iconToUse = blueIcon;
-          } else if (pe.Type === 'Point d\'Eau') {
-            iconToUse = waterIcon;
-          }
-
+        pdeEncountered.forEach(pe => {
+          let iconToUse = icons.water;
+          if (pe.Type === 'Fontaine') iconToUse = icons.fountain;
+          else if (pe.Type === 'Robinet') iconToUse = icons.tap;
+          else if (pe.Type === 'Toilettes') iconToUse = icons.toilets;
+          
           L.marker([pe.Lat, pe.Lon], { icon: iconToUse }).addTo(window.map);
-        }); //pdeEncountered.forEach
+        });
+      }).addTo(window.map);
+    }
 
-      } catch (error) {
-        alert('Error loading or processing GPX file.');
-        console.error(error);
-      } //try
-    } //async function loadGPXFromServer
-
-    //----------------------------------------------------------------------------
-
-    // Main function to start everything
     async function main() {
       towns = await getTowns();
-      await loadGPXFromServer();
-      //        document.getElementById("nothing").style.display = 'none';
-      //      document.getElementById("map").style.display = 'block';
+      
+      const fileInput = document.getElementById('gpxFile');
+      const filename = getQueryParam('gpxFile');
+      const coffeeLat = getQueryParam('clat');
+      const coffeeLon = getQueryParam('clon');
+      const dist = getQueryParam('dist') || 'N/A';
+      const deniv = getQueryParam('deniv') || 'N/A';
+
+      if (!coffeeLat || !coffeeLon) {
+        console.warn('No coffee stop coordinates provided (clat/clon)');
+      }
+
+      fileInput.onchange = async (e) => {
+        const file = e.target.files[0];
+        if (file) {
+          const gpxText = await file.text();
+          await loadGPXWithText(gpxText, coffeeLat, coffeeLon, dist, deniv);
+        }
+      };
+
+      if (filename) {
+        try {
+          const response = await fetch("gpx/" + filename);
+          if (response.ok) {
+            const gpxText = await response.text();
+            await loadGPXWithText(gpxText, coffeeLat, coffeeLon, dist, deniv);
+          } else {
+            alert('Failed to load GPX from server: ' + filename);
+          }
+        } catch (error) {
+          alert('Error loading GPX: ' + error.message);
+        }
+      }
     }
 
     main();
   </script>
 </body>
-
 </html>
