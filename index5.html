@@ -22,7 +22,7 @@
 </head>
 
 <body>
-  <div class="controls">
+  <div id="controls" class="controls">
     <input type="file" id="gpxFile" accept=".gpx" style="margin-right: 10px;">
     <span id="urlStatus">Checking URL parameters...</span>
   </div>
@@ -287,22 +287,22 @@ function distanceToNearestVertex(latlngs, target, toleranceMeters, mapInstance) 
       towns = await getTowns();
       
       const fileInput = document.getElementById('gpxFile');
-      const statusEl = document.getElementById('urlStatus');
+//      const statusEl = document.getElementById('urlStatus');
       
       const filename = getQueryParam('gpxFile');
       const coffeeLat = getQueryParam('clat');
       const coffeeLon = getQueryParam('clon');
-      const dist = getQueryParam('dist') || 'N/A';
-      const deniv = getQueryParam('deniv') || 'N/A';
+      const dist = getQueryParam('dist');
+      const deniv = getQueryParam('deniv');
 
-      statusEl.innerHTML = `
+/*      statusEl.innerHTML = `
         <strong>URL Params:</strong><br>
         gpxFile: ${filename || 'NULL'}<br>
         clat: ${coffeeLat || 'NULL'}<br>
         clon: ${coffeeLon || 'NULL'}<br>
         dist: ${dist}<br>
         deniv: ${deniv}
-      `;
+      `; */
 
       if (!coffeeLat || !coffeeLon) {
         console.warn('No coffee stop coordinates provided (clat/clon)');
@@ -311,15 +311,15 @@ function distanceToNearestVertex(latlngs, target, toleranceMeters, mapInstance) 
       fileInput.onchange = async (e) => {
         const file = e.target.files[0];
         if (file) {
-          statusEl.innerHTML = 'Loading local GPX file...';
+ //         statusEl.innerHTML = 'Loading local GPX file...';
           const gpxText = await file.text();
           await loadGPXWithText(gpxText, coffeeLat, coffeeLon, dist, deniv);
-          statusEl.innerHTML = 'Local GPX loaded successfully!';
-        }
+ //         statusEl.innerHTML = 'Local GPX loaded successfully!';
+ //       }
       };
 
       if (filename) {
-        statusEl.innerHTML += '<br>Loading GPX from server: gpx/' + filename + '...';
+  //      statusEl.innerHTML += '<br>Loading GPX from server: gpx/' + filename + '...';
         try {
           const response = await fetch(`gpx/${filename}`);
           console.log('Fetch response:', response.status, response.statusText);
@@ -327,17 +327,18 @@ function distanceToNearestVertex(latlngs, target, toleranceMeters, mapInstance) 
           if (response.ok) {
             const gpxText = await response.text();
             await loadGPXWithText(gpxText, coffeeLat, coffeeLon, dist, deniv);
-            statusEl.innerHTML += '<br><span style="color: green">✅ Server GPX loaded!</span>';
+   //         statusEl.innerHTML += '<br><span style="color: green">✅ Server GPX loaded!</span>';
           } else {
-            statusEl.innerHTML += `<br><span style="color: red">❌ Failed: ${response.status}</span>`;
+   //         statusEl.innerHTML += `<br><span style="color: red">❌ Failed: ${response.status}</span>`;
             console.error('Fetch failed:', response.status, response.statusText);
           }
         } catch (error) {
-          statusEl.innerHTML += `<br><span style="color: red">❌ Error: ${error.message}</span>`;
+  //        statusEl.innerHTML += `<br><span style="color: red">❌ Error: ${error.message}</span>`;
           console.error('Fetch error:', error);
         }
       } else {
-        statusEl.innerHTML += '<br><span style="color: orange">No gpxFile param - use file input or ?gpxFile=route.gpx</span>';
+        null;
+  //      statusEl.innerHTML += '<br><span style="color: orange">No gpxFile param - use file input or ?gpxFile=route.gpx</span>';
       }
     }
 
