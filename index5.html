@@ -232,8 +232,8 @@ function distanceToNearestVertex(latlngs, target, toleranceMeters, mapInstance) 
             }]
           }).addTo(map);
 
-    if (dist && dist != "N/A") {
       const poplatlngs = polyline.getLatLngs();
+    if (dist && dist != "N/A") {
           const popupPoint = interpolatePointOnLine(poplatlngs, 0.25, map);
           L.popup().setLatLng(popupPoint)
             .setContent(`<span style='font-size: 10px'>Parcours : ${dist}km, ${deniv}m</span>`)
