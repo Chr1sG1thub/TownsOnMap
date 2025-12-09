@@ -232,11 +232,13 @@ function distanceToNearestVertex(latlngs, target, toleranceMeters, mapInstance) 
             }]
           }).addTo(map);
 
-          const poplatlngs = polyline.getLatLngs();
+    if (dist && deniv) {
+      const poplatlngs = polyline.getLatLngs();
           const popupPoint = interpolatePointOnLine(poplatlngs, 0.25, map);
           L.popup().setLatLng(popupPoint)
             .setContent(`<span style='font-size: 10px'>Parcours : ${dist}km, ${deniv}m</span>`)
             .addTo(map);
+    }
 
           // FIXED: Coffee distance calculation
           if (coffeeLat && coffeeLon) {
