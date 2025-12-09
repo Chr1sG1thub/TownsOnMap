@@ -16,7 +16,7 @@
     body { font-family: Arial, sans-serif; margin: 20px; }
     #results { white-space: pre-wrap; margin-top: 20px; }
     .custom-div-icon { font-weight: bold; }
-    .controls { margin-bottom: 20px; padding: 10px; background: #f0f0f0; border-radius: 5px; }
+    .controls { margin-bottom: 20px; padding: 10px; background: #f0f0f0; border-radius: 5px; display: none;}
     .status { margin: 10px 0; padding: 10px; background: #e0f7fa; border-radius: 5px; font-size: 14px; }
   </style>
 </head>
@@ -284,7 +284,6 @@ function distanceToNearestVertex(latlngs, target, toleranceMeters, mapInstance) 
     }
 
     async function main() {
-      towns = await getTowns();
       
       const fileInput = document.getElementById('gpxFile');
 //      const statusEl = document.getElementById('urlStatus');
@@ -295,6 +294,8 @@ function distanceToNearestVertex(latlngs, target, toleranceMeters, mapInstance) 
       const dist = getQueryParam('dist');
       const deniv = getQueryParam('deniv');
 
+      towns = await getTowns();
+      
 /*      statusEl.innerHTML = `
         <strong>URL Params:</strong><br>
         gpxFile: ${filename || 'NULL'}<br>
@@ -318,8 +319,8 @@ function distanceToNearestVertex(latlngs, target, toleranceMeters, mapInstance) 
         }
       };
 
-      if (filename) {
-        document.getElementById('controls').style.display = "none";
+      if (!filename) {
+        document.getElementById('controls').style.display = "block";
   //      statusEl.innerHTML += '<br>Loading GPX from server: gpx/' + filename + '...';
         try {
           const response = await fetch(`gpx/${filename}`);
