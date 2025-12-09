@@ -232,7 +232,7 @@ function distanceToNearestVertex(latlngs, target, toleranceMeters, mapInstance) 
             }]
           }).addTo(map);
 
-    if (dist && deniv) {
+    if (dist && dist != "N/A") {
       const poplatlngs = polyline.getLatLngs();
           const popupPoint = interpolatePointOnLine(poplatlngs, 0.25, map);
           L.popup().setLatLng(popupPoint)
