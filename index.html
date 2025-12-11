@@ -214,7 +214,8 @@ function distanceToNearestVertex(latlngs, target, toleranceMeters, mapInstance) 
         tap: L.icon({iconUrl: 'tap.png', iconSize: [30,30], iconAnchor: [15,15]}),
         fountain: L.icon({iconUrl: 'fountain.png', iconSize: [30,30], iconAnchor: [15,15]}),
         toilets: L.icon({iconUrl: 'toilets.png', iconSize: [30,30], iconAnchor: [15,15]}),
-        coffee: L.icon({iconUrl: 'coffee.png', iconSize: [30,30], iconAnchor: [15,15]})
+        coffee: L.icon({iconUrl: 'coffee.png', iconSize: [30,30], iconAnchor: [15,15]}),
+        mountain: L.icon({iconUrl: 'mountain.png', iconSize: [30,30], iconAnchor: [15,15]})
       };
 
       new L.GPX(gpxText, {
@@ -270,7 +271,8 @@ function distanceToNearestVertex(latlngs, target, toleranceMeters, mapInstance) 
 );
 const peak = myPoints[maxEleIndex];
 const peakMarker = L.marker([peak.lat, peak.lon], {
-  icon: L.divIcon({className: 'peak-icon', html: '🏔️', iconSize: [36, 36]})
+  icon: icons.mountain,
+  zIndexOffset: 1000 
 }).addTo(map);
         
             L.popup({offset: [0, -10]})
