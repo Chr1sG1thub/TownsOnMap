@@ -49,7 +49,7 @@
         for (let i = 0; i < trkpts.length; i++) {
           const latStr = trkpts[i].getAttribute('lat');
           const lonStr = trkpts[i].getAttribute('lon');
-          const eleNode = pt.querySelector('ele');  // Access subelement
+          const eleNode = trkpts[i].querySelector('ele');  // Access subelement
           const ele = eleNode ? parseFloat(eleNode.textContent) : null;
           if (latStr && lonStr && !isNaN(parseFloat(latStr)) && !isNaN(parseFloat(lonStr))) {
             mypts.push({
@@ -160,7 +160,7 @@ function distanceToNearestVertex(latlngs, target, toleranceMeters, mapInstance) 
     }
 
     async function loadGPXWithText(gpxText, coffeeLat, coffeeLon, dist, deniv) {
-      const mypoints = parseGPX(gpxText);
+      const myPoints = parseGPX(gpxText);
 
       const pdeproximityKm = 0.1;
       let pdeEncountered = [];
@@ -170,7 +170,7 @@ function distanceToNearestVertex(latlngs, target, toleranceMeters, mapInstance) 
         const locations = await response.json();
         locations.forEach(loc => {
           if (loc.Display === 'Y') {
-            for (const pt of mypoints) {
+            for (const pt of myPoints) {
               if (distance(pt.lat, pt.lon, loc.Lat, loc.Lon) <= pdeproximityKm) {
                 pdeEncountered.push(loc);
                 break;
@@ -185,7 +185,7 @@ function distanceToNearestVertex(latlngs, target, toleranceMeters, mapInstance) 
       const townproximityKm = 0.25;
       let townsEncountered = [];
       towns.forEach(town => {
-        for (const pt of mypoints) {
+        for (const pt of myPoints) {
           if (distance(pt.lat, pt.lon, town.Lat, town.Lon) <= townproximityKm) {
             townsEncountered.push(town);
             break;
