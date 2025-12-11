@@ -49,10 +49,13 @@
         for (let i = 0; i < trkpts.length; i++) {
           const latStr = trkpts[i].getAttribute('lat');
           const lonStr = trkpts[i].getAttribute('lon');
+          const eleNode = pt.querySelector('ele');  // Access subelement
+          const ele = eleNode ? parseFloat(eleNode.textContent) : null;
           if (latStr && lonStr && !isNaN(parseFloat(latStr)) && !isNaN(parseFloat(lonStr))) {
             mypts.push({
               lat: parseFloat(latStr),
-              lon: parseFloat(lonStr)
+              lon: parseFloat(lonStr),
+              ele: ele
             });
           }
         }
