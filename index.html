@@ -293,7 +293,7 @@ const gpxLayer = new L.GPX(gpxText, {
       }).addTo(map);
 
       L.popup({ className: 'cafepop' })
-        .setLatLng([parseFloat(coffeeLat), parseFloat(coffeeLon)])
+        .setLatLng([parseFloat(coffeeLat)+0.0008, parseFloat(coffeeLon)])
         .setContent(`<span style='font-size: 10px;'>Pause Café à ${kms}km</span>`)
         .addTo(map);
     }
@@ -310,7 +310,7 @@ const gpxLayer = new L.GPX(gpxText, {
     }).addTo(map);
 
     L.popup({ className: 'elevationpop' })
-      .setLatLng([peak.lat, peak.lon])
+      .setLatLng([peak.lat+0.0008, peak.lon])
       .setContent(`<span style='font-size: 10px;'>Max Élévation : ${peak.ele.toFixed(0)}m</span>`)
       .addTo(map);
   });
