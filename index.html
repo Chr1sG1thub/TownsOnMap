@@ -234,7 +234,11 @@ function distanceToNearestVertex(latlngs, target, toleranceMeters, mapInstance) 
       };
 
       new L.GPX(gpxText, {
-        async: true,
+         polyline_options: {
+    color: 'blue',
+    weight: 4,
+    opacity: 0.9
+  },async: true,
         markers: { startIcon: 'start.ico', endIcon: 'finish.ico' },
         marker_options: { iconSize: [12,12], iconAnchor: [6,6] }
       }).on('loaded', function(e) {
