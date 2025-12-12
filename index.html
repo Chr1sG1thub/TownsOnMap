@@ -267,7 +267,7 @@ function distanceToNearestVertex(latlngs, target, toleranceMeters, mapInstance) 
   .setContent(`<span style='font-size: 10px;'>Pause Café à ${kms}km</span>`);
 map.addLayer(coffeePopup);  // Stays open
 
-        });
+        }
 
         const maxEleIndex = myPoints.reduce((maxIdx, pt, idx, arr) => 
   arr[maxIdx]?.ele > pt.ele ? maxIdx : idx, 0
