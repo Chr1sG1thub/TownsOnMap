@@ -279,11 +279,8 @@ if (coffeeLat && coffeeLon) {
   // optional: click marker to toggle the same popup
 //  cMarker.bindPopup(coffeePopup);
 }
-        const maxEleIndex = myPoints.reduce((maxIdx, pt, idx, arr) => 
-  arr[maxIdx]?.ele > pt.ele ? maxIdx : idx, 0
-);
-const peak = myPoints[maxEleIndex];
-const maxEleIndex = myPoints.reduce((maxIdx, pt, idx, arr) => 
+
+  const maxEleIndex = myPoints.reduce((maxIdx, pt, idx, arr) => 
   arr[maxIdx]?.ele > pt.ele ? maxIdx : idx, 0
 );
 const peak = myPoints[maxEleIndex];
