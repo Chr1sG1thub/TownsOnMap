@@ -233,93 +233,109 @@ function distanceToNearestVertex(latlngs, target, toleranceMeters, mapInstance) 
         mountain: L.icon({iconUrl: 'mountain.png', iconSize: [30,30], iconAnchor: [15,15]})
       };
 
-      new L.GPX(gpxText, {
-         polyline_options: {
+const gpxLayer = new L.GPX(gpxText, {
+  async: true,
+  polyline_options: {
     color: 'blue',
     weight: 4,
     opacity: 0.9
-  },async: true,
-        markers: { startIcon: 'start.ico', endIcon: 'finish.ico' },
-        marker_options: { iconSize: [12,12], iconAnchor: [6,6] }
-      }).on('loaded', function(e) {
-        const gpxLayer = e.target;
-        map.fitBounds(gpxLayer.getBounds());
+  },
+  markers: { startIcon: 'start.ico', endIcon: 'finish.ico' },
+  marker_options: { iconSize: [12, 12], iconAnchor: [6, 6] }
+})
+.on('loaded', function (e) {
+  const gpxLayer = e.target;
+  map.fitBounds(gpxLayer.getBounds());
 
-        const polylines = findPolylinesInGPXLayer(gpxLayer);
-        polylines.forEach(polyline => {
-          L.polylineDecorator(polyline, {
-            patterns: [{
-              offset: '3%', repeat: '5%',
-              symbol: L.Symbol.arrowHead({pixelSize: 12, polygon: true, 
-                pathOptions: {color: 'blue', weight: 2, opacity: 1, fill: true, fillColor: 'blue', fillOpacity: 1}})
-            }]
-          }).addTo(map);
+  const polylines = findPolylinesInGPXLayer(gpxLayer);
+  polylines.forEach(polyline => {
+    // arrows
+    L.polylineDecorator(polyline, {
+      patterns: [{
+        offset: '3%',
+        repeat: '5%',
+        symbol: L.Symbol.arrowHead({
+          pixelSize: 12,
+          polygon: true,
+          pathOptions: {
+            color: 'blue',
+            weight: 2,
+            opacity: 1,
+            fill: true,
+            fillColor: 'blue',
+            fillOpacity: 1
+          }
+        })
+      }]
+    }).addTo(map);
 
-      const poplatlngs = polyline.getLatLngs();
-    if (dist && dist != "N/A") {
-          const popupPoint = interpolatePointOnLine(poplatlngs, 0.25, map);
-          L.popup({className: 'parcourspop'}).setLatLng(popupPoint)
-            .setContent(`<span style='font-size: 10px;'>Parcours : ${dist}km, ${deniv}m D+</span>`)
-            .addTo(map);
+    const poplatlngs = polyline.getLatLngs();
+
+    // parcours popup
+    if (dist && dist !== "N/A") {
+      const popupPoint = interpolatePointOnLine(poplatlngs, 0.25, map);
+      L.popup({ className: 'parcourspop' })
+        .setLatLng(popupPoint)
+        .setContent(`<span style='font-size: 10px;'>Parcours : ${dist}km, ${deniv}m D+</span>`)
+        .addTo(map);
     }
 
-          // FIXED: Coffee distance calculation
-if (coffeeLat && coffeeLon) {
-  const targetPoint = L.latLng(parseFloat(coffeeLat), parseFloat(coffeeLon));
-  const toleranceMeters = 50;
-  const distAlong = distanceToNearestVertex(poplatlngs, targetPoint, toleranceMeters, map);
-  const kms = distAlong ? Math.round(distAlong / 1000) : 'N/A (trop loin)';
+    // coffee popup + marker
+    if (coffeeLat && coffeeLon) {
+      const targetPoint = L.latLng(parseFloat(coffeeLat), parseFloat(coffeeLon));
+      const toleranceMeters = 50;
+      const distAlong = distanceToNearestVertex(poplatlngs, targetPoint, toleranceMeters, map);
+      const kms = distAlong ? Math.round(distAlong / 1000) : 'N/A (trop loin)';
 
-  const cMarker = L.marker([parseFloat(coffeeLat), parseFloat(coffeeLon)], { 
-    icon: icons.coffee, 
-    zIndexOffset: 1000 
-  }).addTo(map);
-
-  const coffeePopup = L.popup({ className: 'cafepop' })
-    .setLatLng([parseFloat(coffeeLat), parseFloat(coffeeLon)])
-    .setContent(`<span style='font-size: 10px;'>Pause Café à ${kms}km</span>`)
-    .addTo(map);
-
-  // optional: click marker to toggle the same popup
-//  cMarker.bindPopup(coffeePopup);
-}
-
-  const maxEleIndex = myPoints.reduce((maxIdx, pt, idx, arr) => 
-  arr[maxIdx]?.ele > pt.ele ? maxIdx : idx, 0
-);
-const peak = myPoints[maxEleIndex];
-
-const peakMarker = L.marker([peak.lat, peak.lon], {
-  icon: icons.mountain,
-  zIndexOffset: 1000 
-}).addTo(map);
-
-const peakPopup = L.popup({ className: 'elevationpop' })
-  .setLatLng([peak.lat, peak.lon])
-  .setContent(`<span style='font-size: 10px;'>Max Élévation : ${peak.ele.toFixed(0)}m</span>`)
-  .addTo(map);
-
-//peakMarker.bindPopup(peakPopup);
-          
-        filteredTowns.forEach(ft => {
-          const myIcon = L.divIcon({
-            className: 'custom-div-icon',
-            html: `<span style="color:red; background-color: yellow; line-height: 0.9; display: inline-block; text-align: center; opacity: 0.8;"><strong>${ft.Place}</strong></span>`,
-            iconSize: [ft.Place.length * 10, 20],
-            iconAnchor: [ft.Place.length * 3, 7]
-          });
-          L.marker([ft.nLat, ft.nLon], { icon: myIcon, zIndexOffset: 1000 }).addTo(map);
-        });
-
-        pdeEncountered.forEach(pe => {
-          let iconToUse = icons.water;
-          if (pe.Type === 'Fontaine') iconToUse = icons.fountain;
-          else if (pe.Type === 'Robinet') iconToUse = icons.tap;
-          else if (pe.Type === 'Toilettes') iconToUse = icons.toilets;
-          
-          L.marker([pe.Lat, pe.Lon], { icon: iconToUse }).addTo(map);
-        });
+      const cMarker = L.marker([parseFloat(coffeeLat), parseFloat(coffeeLon)], {
+        icon: icons.coffee,
+        zIndexOffset: 1000
       }).addTo(map);
+
+      L.popup({ className: 'cafepop' })
+        .setLatLng([parseFloat(coffeeLat), parseFloat(coffeeLon)])
+        .setContent(`<span style='font-size: 10px;'>Pause Café à ${kms}km</span>`)
+        .addTo(map);
+    }
+
+    // peak popup + marker
+    const maxEleIndex = myPoints.reduce((maxIdx, pt, idx, arr) =>
+      arr[maxIdx]?.ele > pt.ele ? maxIdx : idx, 0
+    );
+    const peak = myPoints[maxEleIndex];
+
+    const peakMarker = L.marker([peak.lat, peak.lon], {
+      icon: icons.mountain,
+      zIndexOffset: 1000
+    }).addTo(map);
+
+    L.popup({ className: 'elevationpop' })
+      .setLatLng([peak.lat, peak.lon])
+      .setContent(`<span style='font-size: 10px;'>Max Élévation : ${peak.ele.toFixed(0)}m</span>`)
+      .addTo(map);
+  });
+
+  // towns & water markers
+  filteredTowns.forEach(ft => {
+    const myIcon = L.divIcon({
+      className: 'custom-div-icon',
+      html: `<span style="color:red; background-color: yellow; line-height: 0.9; display: inline-block; text-align: center; opacity: 0.8;"><strong>${ft.Place}</strong></span>`,
+      iconSize: [ft.Place.length * 10, 20],
+      iconAnchor: [ft.Place.length * 3, 7]
+    });
+    L.marker([ft.nLat, ft.nLon], { icon: myIcon, zIndexOffset: 1000 }).addTo(map);
+  });
+
+  pdeEncountered.forEach(pe => {
+    let iconToUse = icons.water;
+    if (pe.Type === 'Fontaine') iconToUse = icons.fountain;
+    else if (pe.Type === 'Robinet') iconToUse = icons.tap;
+    else if (pe.Type === 'Toilettes') iconToUse = icons.toilets;
+
+    L.marker([pe.Lat, pe.Lon], { icon: iconToUse }).addTo(map);
+  });
+})
+.addTo(map);
     });
   }
 
