@@ -18,9 +18,20 @@
     .custom-div-icon { font-weight: bold; }
     .controls { margin-bottom: 20px; padding: 10px; background: #f0f0f0; border-radius: 5px; display: none;}
     .status { margin: 10px 0; padding: 10px; background: #e0f7fa; border-radius: 5px; font-size: 14px; }
-    .elevationpop {background-color: palegreen}
-    .cafepop {background-color: wheat}
-    .parcourspop {background-color: paleblue}
+.elevationpop .leaflet-popup-content-wrapper,
+.elevationpop .leaflet-popup-tip {
+  background-color: palegreen;
+}
+
+.cafepop .leaflet-popup-content-wrapper,
+.cafepop .leaflet-popup-tip {
+  background-color: wheat;
+}
+
+.parcourspop .leaflet-popup-content-wrapper,
+.parcourspop .leaflet-popup-tip {
+  background-color: lightblue;
+}
 
   </style>
 </head>
@@ -249,40 +260,46 @@ function distanceToNearestVertex(latlngs, target, toleranceMeters, mapInstance) 
     }
 
           // FIXED: Coffee distance calculation
-          if (coffeeLat && coffeeLon) {
-            console.log('Calculating coffee distance for:', coffeeLat, coffeeLon);
-            const targetPoint = L.latLng(parseFloat(coffeeLat), parseFloat(coffeeLon));
-            const toleranceMeters = 50;
-            const distAlong = distanceToNearestVertex(poplatlngs, targetPoint, toleranceMeters, map);
-            
-            const kms = distAlong ? Math.round(distAlong / 1000) : 'N/A (trop loin)';
-            console.log(`Coffee km result: ${kms}`);
-            
-            const cMarker = L.marker([parseFloat(coffeeLat), parseFloat(coffeeLon)], { 
-              icon: icons.coffee, 
-              zIndexOffset: 1000 
-            });
- const coffeePopup = L.popup({className: 'cafepop'})
-  .setLatLng([parseFloat(coffeeLat), parseFloat(coffeeLon)])
-  .setContent(`<span style='font-size: 10px;'>Pause Café à ${kms}km</span>`);
-map.addLayer(coffeePopup);  // Stays open
+if (coffeeLat && coffeeLon) {
+  const targetPoint = L.latLng(parseFloat(coffeeLat), parseFloat(coffeeLon));
+  const toleranceMeters = 50;
+  const distAlong = distanceToNearestVertex(poplatlngs, targetPoint, toleranceMeters, map);
+  const kms = distAlong ? Math.round(distAlong / 1000) : 'N/A (trop loin)';
 
-        }
+  const cMarker = L.marker([parseFloat(coffeeLat), parseFloat(coffeeLon)], { 
+    icon: icons.coffee, 
+    zIndexOffset: 1000 
+  }).addTo(map);
 
+  const coffeePopup = L.popup({ className: 'cafepop' })
+    .setLatLng([parseFloat(coffeeLat), parseFloat(coffeeLon)])
+    .setContent(`<span style='font-size: 10px;'>Pause Café à ${kms}km</span>`)
+    .addTo(map);
+
+  // optional: click marker to toggle the same popup
+//  cMarker.bindPopup(coffeePopup);
+}
         const maxEleIndex = myPoints.reduce((maxIdx, pt, idx, arr) => 
   arr[maxIdx]?.ele > pt.ele ? maxIdx : idx, 0
 );
 const peak = myPoints[maxEleIndex];
+const maxEleIndex = myPoints.reduce((maxIdx, pt, idx, arr) => 
+  arr[maxIdx]?.ele > pt.ele ? maxIdx : idx, 0
+);
+const peak = myPoints[maxEleIndex];
+
 const peakMarker = L.marker([peak.lat, peak.lon], {
   icon: icons.mountain,
   zIndexOffset: 1000 
-});
-        const peakPopup = L.popup({className: 'elevationpop'})
-  .setLatLng([peak.lat, peak.lon])
-  .setContent(`<span style='font-size: 10px;'>Max Élévation : ${peak.ele.toFixed(0)}m</span>`);
-map.addLayer(peakPopup);  // Both now visible
+}).addTo(map);
 
-        
+const peakPopup = L.popup({ className: 'elevationpop' })
+  .setLatLng([peak.lat, peak.lon])
+  .setContent(`<span style='font-size: 10px;'>Max Élévation : ${peak.ele.toFixed(0)}m</span>`)
+  .addTo(map);
+
+//peakMarker.bindPopup(peakPopup);
+          
         filteredTowns.forEach(ft => {
           const myIcon = L.divIcon({
             className: 'custom-div-icon',
