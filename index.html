@@ -261,13 +261,8 @@ function distanceToNearestVertex(latlngs, target, toleranceMeters, mapInstance) 
             const cMarker = L.marker([parseFloat(coffeeLat), parseFloat(coffeeLon)], { 
               icon: icons.coffee, 
               zIndexOffset: 1000 
-            }).addTo(map);
-            
-            L.popup({offset: [0, -10], className: 'cafepop'})
-              .setLatLng([parseFloat(coffeeLat), parseFloat(coffeeLon)])
-              .setContent(`<span style='font-size: 10px;'>Pause Café à ${kms}km</span>`)
-              .addTo(map);
-          }
+            }).bindPopup(`<span style='font-size: 10px;'>Pause Café à ${kms}km</span>`, {className: 'cafepop'}).addTo(map);
+                      }
         });
 
         const maxEleIndex = myPoints.reduce((maxIdx, pt, idx, arr) => 
