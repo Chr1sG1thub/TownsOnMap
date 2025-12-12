@@ -203,8 +203,7 @@ function distanceToNearestVertex(latlngs, target, toleranceMeters, mapInstance) 
       );
 
       if (!map) {
-        map = L.map('map', {
-  closePopupOnClick: false}).setView([43.6, 2], 10);
+        map = L.map('map').setView([43.6, 2], 10);
         L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
           attribution: '© OpenStreetMap contributors'
         }).addTo(map);
@@ -245,7 +244,7 @@ function distanceToNearestVertex(latlngs, target, toleranceMeters, mapInstance) 
     if (dist && dist != "N/A") {
           const popupPoint = interpolatePointOnLine(poplatlngs, 0.25, map);
           L.popup({className: 'parcourspop'}).setLatLng(popupPoint)
-            .setContent(`<span style='font-size: 10px;'>Parcours : ${dist}km, ${deniv}m</span>`)
+            .setContent(`<span style='font-size: 10px;'>Parcours : ${dist}km, ${deniv}m D+</span>`)
             .addTo(map);
     }
 
@@ -262,10 +261,12 @@ function distanceToNearestVertex(latlngs, target, toleranceMeters, mapInstance) 
             const cMarker = L.marker([parseFloat(coffeeLat), parseFloat(coffeeLon)], { 
               icon: icons.coffee, 
               zIndexOffset: 1000 
-            }).bindPopup(`<span style='font-size: 10px;'>Pause Café à ${kms}km</span>`, {className: 'cafepop'});
-            cMarker.addTo(map);
-            cMarker.openPopup();
-                      }
+            });
+ const coffeePopup = L.popup({className: 'cafepop'})
+  .setLatLng([parseFloat(coffeeLat), parseFloat(coffeeLon)])
+  .setContent(`<span style='font-size: 10px;'>Pause Café à ${kms}km</span>`);
+map.addLayer(coffeePopup);  // Stays open
+
         });
 
         const maxEleIndex = myPoints.reduce((maxIdx, pt, idx, arr) => 
@@ -275,9 +276,12 @@ const peak = myPoints[maxEleIndex];
 const peakMarker = L.marker([peak.lat, peak.lon], {
   icon: icons.mountain,
   zIndexOffset: 1000 
-}).bindPopup(`<span style='font-size: 10px;'>Max Élévation : ${peak.ele.toFixed(0)}m</span>`, {className: 'elevationpop'});
-        peakMarker.addTo(map);
-        peakMarker.openPopup();
+});
+        const peakPopup = L.popup({className: 'elevationpop'})
+  .setLatLng([peak.lat, peak.lon])
+  .setContent(`<span style='font-size: 10px;'>Max Élévation : ${peak.ele.toFixed(0)}m</span>`);
+map.addLayer(peakPopup);  // Both now visible
+
         
         filteredTowns.forEach(ft => {
           const myIcon = L.divIcon({
