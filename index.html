@@ -274,6 +274,15 @@ const gpxLayer = new L.GPX(gpxText, {
   const gpxLayer = e.target;
   map.fitBounds(gpxLayer.getBounds());
 
+  var isoscelesArrow = L.Symbol.path({
+  pathOptions: { fillOpacity: 1, weight: 0, color: '#yourColor' },
+  path: [
+    [0, -15],  // Sharp tip
+    [-10, 5],  // Left base (wider for isosceles)
+    [10, 5]    // Right base
+  ]
+});
+
   const polylines = findPolylinesInGPXLayer(gpxLayer);
   polylines.forEach(polyline => {
     // arrows
@@ -281,7 +290,7 @@ const gpxLayer = new L.GPX(gpxText, {
       patterns: [{
         offset: '3%',
         repeat: '5%',
-        symbol: L.Symbol.arrowHead({
+        symbol: isoscelesArrow({
           pixelSize: 12,
           polygon: true,
           pathOptions: {
