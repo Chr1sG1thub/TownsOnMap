@@ -77,7 +77,7 @@
 
     function getQueryParam(name) {
       const value = new URLSearchParams(window.location.search).get(name);
-      console.log(`Query param "${name}":`, value);
+//      console.log(`Query param "${name}":`, value);
       return value;
     }
 
@@ -101,7 +101,7 @@
             });
           }
         }
-        console.log(`Parsed ${mypts.length} track points`);
+  //      console.log(`Parsed ${mypts.length} track points`);
         return mypts;
       } catch (e) {
         console.error('GPX XML parsing failed:', e);
@@ -131,7 +131,7 @@
           polylines.push(layer);
         }
       });
-      console.log(`Found ${polylines.length} polylines`);
+//      console.log(`Found ${polylines.length} polylines`);
       return polylines;
     }
 
@@ -173,7 +173,7 @@ function distanceToNearestVertex(latlngs, target, toleranceMeters, mapInstance) 
     }
   }
 
-  console.log(`Coffee closest: ${minDistanceKm}m at index ${nearestIndex}`);
+//  console.log(`Coffee closest: ${minDistanceKm}m at index ${nearestIndex}`);
 
   // Check if within tolerance (convert toleranceMeters to KM)
   if (minDistanceKm <= toleranceMeters) {
@@ -181,11 +181,11 @@ function distanceToNearestVertex(latlngs, target, toleranceMeters, mapInstance) 
     for (let i = 0; i < nearestIndex; i++) {
       totalDistanceKm += mapInstance.distance(latlngs[i], latlngs[i + 1]);
     }
-    console.log(`Distance along track: ${totalDistanceKm.toFixed(2)} m`);
+//    console.log(`Distance along track: ${totalDistanceKm.toFixed(2)} m`);
     return totalDistanceKm;  // Return METERS for display logic
   }
   
-  console.log('Coffee outside 50m tolerance');
+//  console.log('Coffee outside 50m tolerance');
   return null;
 }
 
@@ -196,7 +196,7 @@ function distanceToNearestVertex(latlngs, target, toleranceMeters, mapInstance) 
         );
         return await response.json();
       } catch (error) {
-        console.error('Failed to load towns:', error);
+   //     console.error('Failed to load towns:', error);
         return [];
       }
     }
@@ -221,7 +221,7 @@ function distanceToNearestVertex(latlngs, target, toleranceMeters, mapInstance) 
           }
         });
       } catch (error) {
-        console.error('Failed to load water points:', error);
+    //    console.error('Failed to load water points:', error);
       }
 
       const townproximityKm = 0.25;
@@ -400,7 +400,7 @@ const gpxLayer = new L.GPX(gpxText, {
       `; */
 
       if (!coffeeLat || !coffeeLon) {
-        console.warn('No coffee stop coordinates provided (clat/clon)');
+   //     console.warn('No coffee stop coordinates provided (clat/clon)');
       }
 
       fileInput.onchange = async (e) => {
@@ -417,7 +417,7 @@ const gpxLayer = new L.GPX(gpxText, {
   //      statusEl.innerHTML += '<br>Loading GPX from server: gpx/' + filename + '...';
         try {
           const response = await fetch(`gpx/${filename}`);
-          console.log('Fetch response:', response.status, response.statusText);
+  //        console.log('Fetch response:', response.status, response.statusText);
           
           if (response.ok) {
             const gpxText = await response.text();
@@ -425,11 +425,11 @@ const gpxLayer = new L.GPX(gpxText, {
    //         statusEl.innerHTML += '<br><span style="color: green">✅ Server GPX loaded!</span>';
           } else {
    //         statusEl.innerHTML += `<br><span style="color: red">❌ Failed: ${response.status}</span>`;
-            console.error('Fetch failed:', response.status, response.statusText);
+   //        console.error('Fetch failed:', response.status, response.statusText);
           }
         } catch (error) {
   //        statusEl.innerHTML += `<br><span style="color: red">❌ Error: ${error.message}</span>`;
-          console.error('Fetch error:', error);
+     //     console.error('Fetch error:', error);
         }
       } else {
         null;
