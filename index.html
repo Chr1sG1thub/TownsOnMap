@@ -307,7 +307,7 @@ const gpxLayer = new L.GPX(gpxText, {
 
     const poplatlngs = polyline.getLatLngs();
 
-const bounds = data.reduce((bounds, point) => {
+const bounds = myPoints.reduce((bounds, point) => {
   bounds.minLat = Math.min(bounds.minLat, point.lat);
   bounds.maxLat = Math.max(bounds.maxLat, point.lat);
   bounds.minLon = Math.min(bounds.minLon, point.lon);
@@ -317,7 +317,7 @@ const bounds = data.reduce((bounds, point) => {
 
     // parcours popup
     if (dist && dist !== "N/A") {
-      const popupPoint = interpolatePointOnLine(poplatlngs, 0.25, map);
+//      const popupPoint = interpolatePointOnLine(poplatlngs, 0.25, map);
       L.popup({ className: 'parcourspop' })
         .setLatLng(L.latLng((bounds.maxLat-bounds.minLat)/2, (bounds.maxLon-bounds.minLon)/2))
         .setContent(`<span style='font-size: 10px;'>Parcours : ${dist}km, ${deniv}m D+</span>`)
