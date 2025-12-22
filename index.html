@@ -319,7 +319,7 @@ const bounds = myPoints.reduce((bounds, point) => {
     if (dist && dist !== "N/A") {
 //      const popupPoint = interpolatePointOnLine(poplatlngs, 0.25, map);
       L.popup({ className: 'parcourspop' })
-        .setLatLng(L.latLng((bounds.maxLat-bounds.minLat)/2, (bounds.maxLon-bounds.minLon)/2))
+        .setLatLng(L.latLng((bounds.maxLat + bounds.minLat)/2, (bounds.maxLon + bounds.minLon)/2))
         .setContent(`<span style='font-size: 10px;'>Parcours : ${dist}km, ${deniv}m D+</span>`)
         .addTo(map);
     }
