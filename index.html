@@ -345,7 +345,7 @@ const gpxLayer = new L.GPX(gpxText, {
     );
     const trough = myPoints[minEleIndex];
 
-    console.log(`Min Elev = ${trough.ele.toFixed(0)}m at ${trough.lat}, ${trough.lon}.`;
+    console.log(`Min Elev = ${trough.ele.toFixed(0)}m at ${trough.lat}, ${trough.lon}.`);
 
     const peakMarker = L.marker([peak.lat, peak.lon], {
       icon: icons.mountain,
