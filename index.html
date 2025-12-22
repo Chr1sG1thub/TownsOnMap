@@ -21,11 +21,11 @@
     
 .elevationpop .leaflet-popup-content-wrapper {background-color: palegreen; padding: 4px;}
     
-.elevationpop .leaflet-popup-tip {
+.ationpop .leaflet-popup-tip {
    background-color: palegreen; width: 10px;  margin-top: -10px; margin-right: 16px; margin-bottom: 0px; margin-left: 16px;
 }
 
-.elevationpop .leaflet-popup-content {
+.ationpop .leaflet-popup-content {
   margin-top: 3px;
   margin-left: 0px;
   margin-bottom: 0px;
@@ -345,15 +345,15 @@ const gpxLayer = new L.GPX(gpxText, {
     );
     const trough = myPoints[minEleIndex];
 
- //   console.log(`Min Elev = ${trough.ele.toFixed(0)}m at ${trough.lat}, ${trough.lon}.`);
+ //   console.log(`Min  = ${trough.ele.toFixed(0)}m at ${trough.lat}, ${trough.lon}.`);
 
-    const peakMarker = L.marker([peak.lat, peak.lon], {
+    /*const peakMarker = L.marker([peak.lat, peak.lon], {
       icon: icons.mountain,
       zIndexOffset: 1000
-    }).addTo(map);
+    }).addTo(map);*/
 
     L.popup({ className: 'elevationpop' })
-      .setLatLng([peak.lat+0.0008, peak.lon])
+      .setLatLng([peak.lat/*+0.0008*/, peak.lon])
       .setContent(`<span style='font-size: 10px;'>Max Élévation : ${peak.ele.toFixed(0)}m</span>`)
       .addTo(map);
 
