@@ -367,12 +367,12 @@ const bounds = myPoints.reduce((bounds, point) => {
 
     L.popup({ className: 'elevationpop' })
       .setLatLng([peak.lat/*+0.0008*/, peak.lon])
-      .setContent(`<span style='font-size: 10px;'>Max Élévation : ${peak.ele.toFixed(0)}m</span>`)
+      .setContent(`<span style='font-size: 10px;'>⛰ Max : ${peak.ele.toFixed(0)}m</span>`)
       .addTo(map);
 
       L.popup({ className: 'elevationpop' })
       .setLatLng([trough.lat, trough.lon])
-      .setContent(`<span style='font-size: 10px;'>Min Élévation : ${trough.ele.toFixed(0)}m</span>`)
+      .setContent(`<span style='font-size: 10px;'>⛰ Min : ${trough.ele.toFixed(0)}m</span>`)
       .addTo(map);
 
   });
