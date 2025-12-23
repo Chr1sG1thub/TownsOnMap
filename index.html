@@ -325,7 +325,7 @@ const bounds = myPoints.reduce((bounds, point) => {
 //      const popupPoint = interpolatePointOnLine(poplatlngs, 0.25, map);
       L.popup({ className: 'parcourspop' })
         .setLatLng(L.latLng((bounds.maxLat + bounds.minLat)/2, (bounds.maxLon + bounds.minLon)/2))
-        .setContent(`<span style='font-size: 10px;'>Parcours : ${dist}km, ${deniv}m D+</span>`)
+        .setContent(`<span style='font-size: 10px;'>🚴 : ${dist}km, ${deniv}m D+</span>`)
         .addTo(map);
     }
 
@@ -336,14 +336,14 @@ const bounds = myPoints.reduce((bounds, point) => {
       const distAlong = distanceToNearestVertex(poplatlngs, targetPoint, toleranceMeters, map);
       const kms = distAlong ? Math.round(distAlong / 1000) : 'N/A (trop loin)';
 
-      const cMarker = L.marker([parseFloat(coffeeLat), parseFloat(coffeeLon)], {
+      /*const cMarker = L.marker([parseFloat(coffeeLat), parseFloat(coffeeLon)], {
         icon: icons.coffee,
         zIndexOffset: 1000
-      }).addTo(map);
+      }).addTo(map);*/
 
       L.popup({ className: 'cafepop' })
-        .setLatLng([parseFloat(coffeeLat)+0.0008, parseFloat(coffeeLon)])
-        .setContent(`<span style='font-size: 10px;'>Pause Café à ${kms}km</span>`)
+        .setLatLng([parseFloat(coffeeLat)/*+0.0008*/, parseFloat(coffeeLon)])
+        .setContent(`<span style='font-size: 10px;'>☕ à ${kms}km</span>`)
         .addTo(map);
     }
 
