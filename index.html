@@ -329,24 +329,6 @@ const bounds = myPoints.reduce((bounds, point) => {
         .addTo(map);
     }
 
-    // coffee popup + marker
-    if (coffeeLat && coffeeLon) {
-      const targetPoint = L.latLng(parseFloat(coffeeLat), parseFloat(coffeeLon));
-      const toleranceMeters = 50;
-      const distAlong = distanceToNearestVertex(poplatlngs, targetPoint, toleranceMeters, map);
-      const kms = distAlong ? Math.round(distAlong / 1000) : 'N/A (trop loin)';
-
-      /*const cMarker = L.marker([parseFloat(coffeeLat), parseFloat(coffeeLon)], {
-        icon: icons.coffee,
-        zIndexOffset: 1000
-      }).addTo(map);*/
-
-      L.popup({ className: 'cafepop' })
-        .setLatLng([parseFloat(coffeeLat)/*+0.0008*/, parseFloat(coffeeLon)])
-        .setContent(`<span style='font-size: 10px;'>☕ à ${kms}km</span>`)
-        .addTo(map);
-    }
-
     // peak popup + marker
     const maxEleIndex = myPoints.reduce((maxIdx, pt, idx, arr) =>
       arr[maxIdx]?.ele > pt.ele ? maxIdx : idx, 0
@@ -377,7 +359,25 @@ const bounds = myPoints.reduce((bounds, point) => {
 
   });
 
-  // towns & water markers
+     // coffee popup + marker
+    if (coffeeLat && coffeeLon) {
+      const targetPoint = L.latLng(parseFloat(coffeeLat), parseFloat(coffeeLon));
+      const toleranceMeters = 50;
+      const distAlong = distanceToNearestVertex(poplatlngs, targetPoint, toleranceMeters, map);
+      const kms = distAlong ? Math.round(distAlong / 1000) : 'N/A (trop loin)';
+
+      /*const cMarker = L.marker([parseFloat(coffeeLat), parseFloat(coffeeLon)], {
+        icon: icons.coffee,
+        zIndexOffset: 1000
+      }).addTo(map);*/
+
+      L.popup({ className: 'cafepop' })
+        .setLatLng([parseFloat(coffeeLat)/*+0.0008*/, parseFloat(coffeeLon)])
+        .setContent(`<span style='font-size: 10px;'>☕ à ${kms}km</span>`)
+        .addTo(map);
+    }
+
+ // towns & water markers
   filteredTowns.forEach(ft => {
     const myIcon = L.divIcon({
       className: 'custom-div-icon',
