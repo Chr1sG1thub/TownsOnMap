@@ -357,8 +357,6 @@ const bounds = myPoints.reduce((bounds, point) => {
       .setContent(`<span style='font-size: 10px;'>⛰ Min : ${trough.ele.toFixed(0)}m</span>`)
       .addTo(map);
 
-  });
-
      // coffee popup + marker
     if (coffeeLat && coffeeLon) {
       const targetPoint = L.latLng(parseFloat(coffeeLat), parseFloat(coffeeLon));
@@ -380,6 +378,8 @@ var popup = L.popup({ pane: 'customPopupPane' });
         .setContent(`<span style='font-size: 10px;'>☕ à ${kms}km</span>`)
         .addTo(map);
     }
+
+  });
 
  // towns & water markers
   filteredTowns.forEach(ft => {
