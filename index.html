@@ -371,7 +371,11 @@ const bounds = myPoints.reduce((bounds, point) => {
         zIndexOffset: 1000
       }).addTo(map);*/
 
-      L.popup({ className: 'cafepop' })
+  map.createPane('customPopupPane');
+map.getPane('customPopupPane').style.zIndex = 850;
+
+var popup = L.popup({ pane: 'customPopupPane' });
+    L.popup({ className: 'cafepop', pane: 'customPopupPane' })
         .setLatLng([parseFloat(coffeeLat)/*+0.0008*/, parseFloat(coffeeLon)])
         .setContent(`<span style='font-size: 10px;'>☕ à ${kms}km</span>`)
         .addTo(map);
