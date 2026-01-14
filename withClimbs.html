@@ -514,13 +514,13 @@ const bounds = myPoints.reduce((bounds, point) => {
       L.popup({ className: 'elevationpop' })
       .setLatLng([myPoints[climbs[iclimb][1]].lat, myPoints[climbs[iclimb][1]].lon])
       .setContent(`<span style='font-size: 10px;'>⛰ Arr ${iclimb + 1}</span>`)
-      .addTo(map);
-    } */
+      .addTo(map);*/
 
       const mt1Marker = L.marker([myPoints[climbs[iclimb][0]].lat, myPoints[climbs[iclimb][0]].lon], {
       icon: icons.mt1,
       zIndexOffset: 1000
     }).addTo(map);
+    } 
 
     /* L.popup({ className: 'elevationpop' })
       .setLatLng([peak.lat, peak.lon])
