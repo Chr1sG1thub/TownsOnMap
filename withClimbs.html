@@ -499,20 +499,25 @@ const bounds = myPoints.reduce((bounds, point) => {
 
     for (let iclimb = 0; iclimb < climbs.length; iclimb++) {
       L.popup({ className: 'elevationpop' })
-      .setLatLng([myPoints[climbs[iclimb][0]].lat, myPoints[climbs[iclimb][1]].lon])
-      .setContent(`<span style='font-size: 10px;'>⛰ Max : ${climbs[iclimb][2].gain.toFixed(0)}m</span>`)
+      .setLatLng([myPoints[climbs[iclimb][0]].lat, myPoints[climbs[iclimb][0]].lon])
+      .setContent(`<span style='font-size: 10px;'>⛰ Dep : ${climbs[iclimb][2].gain.toFixed(0)}m</span>`)
+      .addTo(map);
+      
+      L.popup({ className: 'elevationpop' })
+      .setLatLng([myPoints[climbs[iclimb][1]].lat, myPoints[climbs[iclimb][1]].lon])
+      .setContent(`<span style='font-size: 10px;'>⛰ Arr</span>`)
       .addTo(map);
     }
 
-     L.popup({ className: 'elevationpop' })
-      .setLatLng([peak.lat/*+0.0008*/, peak.lon])
+    /* L.popup({ className: 'elevationpop' })
+      .setLatLng([peak.lat, peak.lon])
       .setContent(`<span style='font-size: 10px;'>⛰ Max : ${peak.ele.toFixed(0)}m</span>`)
       .addTo(map);
 
       L.popup({ className: 'elevationpop' })
       .setLatLng([trough.lat, trough.lon])
       .setContent(`<span style='font-size: 10px;'>⛰ Min : ${trough.ele.toFixed(0)}m</span>`)
-      .addTo(map);
+      .addTo(map); */
 
      // coffee popup + marker
     if (coffeeLat && coffeeLon) {
