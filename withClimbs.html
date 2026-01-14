@@ -520,7 +520,7 @@ const bounds = myPoints.reduce((bounds, point) => {
         L.marker([myPoints[climbs[iclimb][0]].lat, myPoints[climbs[iclimb][0]].lon], {
         icon: icons.mt1,
         zIndexOffset: 1000
-      }).addTo(map);
+      }).addTo(map).bindPopup('<b>Hello!</b><br>This is a popup.');
       } else if (iclimb == 1) {
         L.marker([myPoints[climbs[iclimb][0]].lat, myPoints[climbs[iclimb][0]].lon], {
         icon: icons.mt2,
