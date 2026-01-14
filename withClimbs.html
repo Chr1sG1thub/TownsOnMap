@@ -10,6 +10,8 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet-gpx/2.2.0/gpx.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/leaflet-polylinedecorator@1.6.0/dist/leaflet.polylineDecorator.min.js"></script>
   <script src="https://unpkg.com/@mapbox/togeojson@0.16.2/togeojson.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@turf/turf@7/turf.min.js"></script>
+ 
 
   <style>
     #map { height: 800px; width: 100%; }
@@ -114,6 +116,150 @@
       }
     }
 
+       function findClimbs({
+      points,                  // [{lat, lon, ele}, ...] GPX points
+      indices,                 // Optional pre-simplified indices
+      simplifyPoints = true,   // Douglas-Peucker simplify?
+      courseDistance = 0,      // Total route km (auto if 0)
+      threshold = 0.2,         // Min rating (m @10%)
+      sign = 1,                // 1=up, -1=down, 0=both
+      maxDepth = 10            // Recursion guard
+    } = {}) {
+      if (!points?.length || points.length < 2 || maxDepth <= 0) return [];
+
+      // Auto-compute courseDistance
+      const totalDist = courseDistance || turf.length(
+        { type: 'LineString', coordinates: points.map(p => [p.lon, p.lat]) },
+        { units: 'kilometers' }
+      );
+
+      // Indices: simplify or full
+      indices ??= simplifyPoints
+        ? simplifyProfile(points, totalDist)
+        : points.map((_, i) => i);
+
+      if (indices.length < 2) return [];
+
+
+      // BRUTE-FORCE: Find max rating segment (O(n^2), fine post-simplify)
+      let maxRating = threshold;
+      let bestRange = null;
+      let segPoints;
+      for (let j = 1; j < indices.length; j++) {
+        for (let i = 0; i < j; i++) {
+          if (Math.abs(indices[j] - indices[i]) < 3) continue;  // Min 3 pts/segment
+          //        if ((indices[j] + 1) >= indices[i]) {
+          segPoints = points.slice(indices[i], indices[j] + 1);
+          //        } else {
+          //      segPoints = points.slice(indices[j] + 1, indices[i]);
+          //       }
+          const details = climbRating({ points: segPoints });
+          let r = sign === 0 ? Math.abs(details.rating) : details.rating * sign;
+          if (r > maxRating) {
+            maxRating = r;
+            bestRange = { i, j, ...details };
+          }
+        }
+      }
+
+      const climbs = [];
+      if (bestRange && maxRating >= threshold) {
+        // PREFIX recurse (before climb)
+        if (bestRange.i > 0) {
+          const prefixLen = turf.length(
+            { type: 'LineString', coordinates: points.slice(indices[0], indices[bestRange.i] + 1).map(p => [p.lon, p.lat]) },
+            { units: 'kilometers' }
+          );
+          climbs.push(...findClimbs({
+            points,
+            indices: indices.slice(0, bestRange.i),
+            simplifyPoints: false,
+            courseDistance: prefixLen,
+            threshold,
+            sign,
+            maxDepth: maxDepth - 1
+          }));
+        }
+
+        // THIS CLIMB (enhanced details)
+        climbs.push([indices[bestRange.i], indices[bestRange.j], {
+          rating: maxRating,
+          gain: bestRange.gain,
+          distKm: bestRange.distKm,
+          avgGrad: bestRange.avgGrad
+        }]);
+
+        // SUFFIX recurse (after climb)
+        if (bestRange.j < indices.length - 1) {
+          const suffixLen = turf.length(
+            { type: 'LineString', coordinates: points.slice(indices[bestRange.j], indices.at(-1) + 1).map(p => [p.lon, p.lat]) },
+            { units: 'kilometers' }
+          );
+          climbs.push(...findClimbs({
+            points,
+            indices: indices.slice(bestRange.j + 1),
+            simplifyPoints: false,
+            courseDistance: suffixLen,
+            threshold,
+            sign,
+            maxDepth: maxDepth - 1
+          }));
+        }
+      }
+
+      return climbs;
+    }
+
+    function climbRating({ points }) {
+      if (points.length < 2) return 0;
+      const gain = points[points.length - 1].ele - points[0].ele;
+      if (gain <= 0) {
+        const rating = 0;
+        return { rating };
+      }
+
+      const coords = points.map(p => [p.lon, p.lat]);
+      const distKm = turf.length({ type: 'LineString', coordinates: coords }, { units: 'kilometers' });  // FIXED [web:52]
+      const distM = distKm * 1000;
+      const avgGrad = (gain / distM) * 100;
+
+      //const rating = Math.pow(Math.max(0, gain), 2) / 10 * Math.pow(avgGrad / 10, -1);
+
+      const rating = Math.pow(Math.max(0, gain), 2) / (distM * 10); //fiets
+      //const rating = Math.max(0, gain)*(1 + Math.pow(10*Math.max(0, gain)/distM, 2)); //cbb
+
+      return { rating, gain, distKm, avgGrad };
+    }
+
+    function simplifyProfile(points, courseDistance) {
+      if (!points || points.length < 3) return points.map((_, i) => i);
+      const coords = points.map(p => [p.lon, p.lat]);
+      //const tolerance = (courseDistance || 50) / 1000 * Math.pow(2, 0.5) * 0.01;
+      const tolerance = 0.001;
+      const simplified = turf.simplify({ type: 'LineString', coordinates: coords }, { tolerance, highQuality: true });
+
+      const simpIndices = [];
+      simplified.coordinates.forEach(sc => {  // FIXED: geometry access [web:51]
+        let minDist = Infinity, bestIdx = 0;
+        coords.forEach((oc, oi) => {
+          const d = turf.distance(sc, oc, { units: 'meters' });
+          if (d < minDist) { minDist = d; bestIdx = oi; }
+        });
+        if (minDist < 10) simpIndices.push(bestIdx);
+      });
+      // return circularUniq(simpIndices);
+      return simpIndices;
+    }
+    // Utils
+    function circularUniq(arr) {
+      const uniq = [];
+      for (let i = 0; i < arr.length; i++) {
+        if (!uniq.includes(arr[i])) uniq.push(arr[i]);
+        // if (uniq.length >= arr.length / 2) break;  // Prevent over-simplify loops
+      }
+      return uniq;
+    }
+
     function distance(lat1, lon1, lat2, lon2) {
       const R = 6371;
       const dLat = ((lat2 - lat1) * Math.PI) / 180;
@@ -208,6 +354,10 @@ function distanceToNearestVertex(latlngs, target, toleranceMeters, mapInstance) 
 
     async function loadGPXWithText(gpxText, coffeeLat, coffeeLon, dist, deniv) {
       const myPoints = parseGPX(gpxText);
+
+      const climbs = findClimbs({points : myPoints});
+
+      console.log(climbs);
 
       const pdeproximityKm = 0.1;
       let pdeEncountered = [];
