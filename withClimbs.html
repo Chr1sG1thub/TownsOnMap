@@ -497,7 +497,14 @@ const bounds = myPoints.reduce((bounds, point) => {
       zIndexOffset: 1000
     }).addTo(map);*/
 
-    L.popup({ className: 'elevationpop' })
+    for (let iclimb = 0; iclimb < climbs.length; iclimb++) {
+      L.popup({ className: 'elevationpop' })
+      .setLatLng([climbs[iclimb].start.lat, climbs[iclimb].start.lon])
+      .setContent(`<span style='font-size: 10px;'>⛰ Max : ${climbs[iclimb].details.gain.toFixed(0)}m</span>`)
+      .addTo(map);
+    }
+
+     L.popup({ className: 'elevationpop' })
       .setLatLng([peak.lat/*+0.0008*/, peak.lon])
       .setContent(`<span style='font-size: 10px;'>⛰ Max : ${peak.ele.toFixed(0)}m</span>`)
       .addTo(map);
