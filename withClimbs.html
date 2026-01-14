@@ -500,12 +500,12 @@ const bounds = myPoints.reduce((bounds, point) => {
     for (let iclimb = 0; iclimb < climbs.length; iclimb++) {
       L.popup({ className: 'elevationpop' })
       .setLatLng([myPoints[climbs[iclimb][0]].lat, myPoints[climbs[iclimb][0]].lon])
-      .setContent(`<span style='font-size: 10px;'>⛰ Dep : ${climbs[iclimb][2].gain.toFixed(0)}m</span>`)
+      .setContent(`<span style='font-size: 10px;'>⛰ Dep ${iclimb + 1}: ${climbs[iclimb][2].gain.toFixed(0)}m</span>`)
       .addTo(map);
       
       L.popup({ className: 'elevationpop' })
       .setLatLng([myPoints[climbs[iclimb][1]].lat, myPoints[climbs[iclimb][1]].lon])
-      .setContent(`<span style='font-size: 10px;'>⛰ Arr</span>`)
+      .setContent(`<span style='font-size: 10px;'>⛰ Arr ${iclimb + 1}</span>`)
       .addTo(map);
     }
 
