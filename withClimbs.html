@@ -499,7 +499,7 @@ const bounds = myPoints.reduce((bounds, point) => {
 
     for (let iclimb = 0; iclimb < climbs.length; iclimb++) {
       L.popup({ className: 'elevationpop' })
-      .setLatLng([myPoints[climbs[iclimb][0], myPoints[climbs[iclimb][1]])
+      .setLatLng([myPoints[climbs[iclimb][0]], myPoints[climbs[iclimb][1]]])
       .setContent(`<span style='font-size: 10px;'>⛰ Max : ${climbs[iclimb][2].gain.toFixed(0)}m</span>`)
       .addTo(map);
     }
