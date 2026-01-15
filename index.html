@@ -246,7 +246,7 @@
           const d = turf.distance(sc, oc, { units: 'meters' });
           if (d < minDist) { minDist = d; bestIdx = oi; }
         });
-        if (minDist < 10) simpIndices.push(bestIdx);
+        /*if (minDist < 10)*/ simpIndices.push(bestIdx);
       });
       // return circularUniq(simpIndices);
       return simpIndices;
