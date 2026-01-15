@@ -239,8 +239,9 @@
       const simplified = turf.simplify({ type: 'LineString', coordinates: coords }, { tolerance, highQuality: true });
 
       const simpIndices = [];
+      let maxoi = 0;
       simplified.coordinates.forEach(sc => {  // FIXED: geometry access [web:51]
-        let minDist = Infinity, bestIdx = 0, maxoi = 0;
+        let minDist = Infinity, bestIdx = 0;
         coords.forEach((oc, oi) => {
           if (oi <= maxoi) return;
           const d = turf.distance(sc, oc, { units: 'meters' });
