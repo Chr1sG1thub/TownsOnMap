@@ -242,6 +242,7 @@
       simplified.coordinates.forEach(sc => {  // FIXED: geometry access [web:51]
         let minDist = Infinity, bestIdx = 0;
         coords.forEach((oc, oi) => {
+          if (oi <= bestIdx) return;
           const d = turf.distance(sc, oc, { units: 'meters' });
           if (d < minDist) { minDist = d; bestIdx = oi; }
         });
