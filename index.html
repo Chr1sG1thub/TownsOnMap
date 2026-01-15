@@ -3,13 +3,15 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>TownsOnMap</title>
+  <title>Carte</title>
 
   <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
   <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet-gpx/2.2.0/gpx.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/leaflet-polylinedecorator@1.6.0/dist/leaflet.polylineDecorator.min.js"></script>
   <script src="https://unpkg.com/@mapbox/togeojson@0.16.2/togeojson.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@turf/turf@7/turf.min.js"></script>
+ 
 
   <style>
     #map { height: 800px; width: 100%; }
@@ -114,6 +116,150 @@
       }
     }
 
+       function findClimbs({
+      points,                  // [{lat, lon, ele}, ...] GPX points
+      indices,                 // Optional pre-simplified indices
+      simplifyPoints = true,   // Douglas-Peucker simplify?
+      courseDistance = 0,      // Total route km (auto if 0)
+      threshold = 0.2,         // Min rating (m @10%)
+      sign = 1,                // 1=up, -1=down, 0=both
+      maxDepth = 10            // Recursion guard
+    } = {}) {
+      if (!points?.length || points.length < 2 || maxDepth <= 0) return [];
+
+      // Auto-compute courseDistance
+      const totalDist = courseDistance || turf.length(
+        { type: 'LineString', coordinates: points.map(p => [p.lon, p.lat]) },
+        { units: 'kilometers' }
+      );
+
+      // Indices: simplify or full
+      indices ??= simplifyPoints
+        ? simplifyProfile(points, totalDist)
+        : points.map((_, i) => i);
+
+      if (indices.length < 2) return [];
+
+
+      // BRUTE-FORCE: Find max rating segment (O(n^2), fine post-simplify)
+      let maxRating = threshold;
+      let bestRange = null;
+      let segPoints;
+      for (let j = 1; j < indices.length; j++) {
+        for (let i = 0; i < j; i++) {
+          if (Math.abs(indices[j] - indices[i]) < 3) continue;  // Min 3 pts/segment
+          //        if ((indices[j] + 1) >= indices[i]) {
+          segPoints = points.slice(indices[i], indices[j] + 1);
+          //        } else {
+          //      segPoints = points.slice(indices[j] + 1, indices[i]);
+          //       }
+          const details = climbRating({ points: segPoints });
+          let r = sign === 0 ? Math.abs(details.rating) : details.rating * sign;
+          if (r > maxRating) {
+            maxRating = r;
+            bestRange = { i, j, ...details };
+          }
+        }
+      }
+
+      const climbs = [];
+      if (bestRange && maxRating >= threshold) {
+        // PREFIX recurse (before climb)
+        if (bestRange.i > 0) {
+          const prefixLen = turf.length(
+            { type: 'LineString', coordinates: points.slice(indices[0], indices[bestRange.i] + 1).map(p => [p.lon, p.lat]) },
+            { units: 'kilometers' }
+          );
+          climbs.push(...findClimbs({
+            points,
+            indices: indices.slice(0, bestRange.i),
+            simplifyPoints: false,
+            courseDistance: prefixLen,
+            threshold,
+            sign,
+            maxDepth: maxDepth - 1
+          }));
+        }
+
+        // THIS CLIMB (enhanced details)
+        climbs.push([indices[bestRange.i], indices[bestRange.j], {
+          rating: maxRating,
+          gain: bestRange.gain,
+          distKm: bestRange.distKm,
+          avgGrad: bestRange.avgGrad
+        }]);
+
+        // SUFFIX recurse (after climb)
+        if (bestRange.j < indices.length - 1) {
+          const suffixLen = turf.length(
+            { type: 'LineString', coordinates: points.slice(indices[bestRange.j], indices.at(-1) + 1).map(p => [p.lon, p.lat]) },
+            { units: 'kilometers' }
+          );
+          climbs.push(...findClimbs({
+            points,
+            indices: indices.slice(bestRange.j + 1),
+            simplifyPoints: false,
+            courseDistance: suffixLen,
+            threshold,
+            sign,
+            maxDepth: maxDepth - 1
+          }));
+        }
+      }
+
+      return climbs;
+    }
+
+    function climbRating({ points }) {
+      if (points.length < 2) return 0;
+      const gain = points[points.length - 1].ele - points[0].ele;
+      if (gain <= 0) {
+        const rating = 0;
+        return { rating };
+      }
+
+      const coords = points.map(p => [p.lon, p.lat]);
+      const distKm = turf.length({ type: 'LineString', coordinates: coords }, { units: 'kilometers' });  // FIXED [web:52]
+      const distM = distKm * 1000;
+      const avgGrad = (gain / distM) * 100;
+
+      //const rating = Math.pow(Math.max(0, gain), 2) / 10 * Math.pow(avgGrad / 10, -1);
+
+      const rating = Math.pow(Math.max(0, gain), 2) / (distM * 10); //fiets
+      //const rating = Math.max(0, gain)*(1 + Math.pow(10*Math.max(0, gain)/distM, 2)); //cbb
+
+      return { rating, gain, distKm, avgGrad };
+    }
+
+    function simplifyProfile(points, courseDistance) {
+      if (!points || points.length < 3) return points.map((_, i) => i);
+      const coords = points.map(p => [p.lon, p.lat]);
+      //const tolerance = (courseDistance || 50) / 1000 * Math.pow(2, 0.5) * 0.01;
+      const tolerance = 0.001;
+      const simplified = turf.simplify({ type: 'LineString', coordinates: coords }, { tolerance, highQuality: true });
+
+      const simpIndices = [];
+      simplified.coordinates.forEach(sc => {  // FIXED: geometry access [web:51]
+        let minDist = Infinity, bestIdx = 0;
+        coords.forEach((oc, oi) => {
+          const d = turf.distance(sc, oc, { units: 'meters' });
+          if (d < minDist) { minDist = d; bestIdx = oi; }
+        });
+        if (minDist < 10) simpIndices.push(bestIdx);
+      });
+      // return circularUniq(simpIndices);
+      return simpIndices;
+    }
+    // Utils
+    function circularUniq(arr) {
+      const uniq = [];
+      for (let i = 0; i < arr.length; i++) {
+        if (!uniq.includes(arr[i])) uniq.push(arr[i]);
+        // if (uniq.length >= arr.length / 2) break;  // Prevent over-simplify loops
+      }
+      return uniq;
+    }
+
     function distance(lat1, lon1, lat2, lon2) {
       const R = 6371;
       const dLat = ((lat2 - lat1) * Math.PI) / 180;
@@ -209,6 +355,10 @@ function distanceToNearestVertex(latlngs, target, toleranceMeters, mapInstance) 
     async function loadGPXWithText(gpxText, coffeeLat, coffeeLon, dist, deniv) {
       const myPoints = parseGPX(gpxText);
 
+      const climbs = findClimbs({points : myPoints});
+
+      console.log(climbs);
+
       const pdeproximityKm = 0.1;
       let pdeEncountered = [];
 
@@ -262,7 +412,15 @@ function distanceToNearestVertex(latlngs, target, toleranceMeters, mapInstance) 
         fountain: L.icon({iconUrl: 'fountain.png', iconSize: [30,30], iconAnchor: [15,15]}),
         toilets: L.icon({iconUrl: 'toilets.png', iconSize: [30,30], iconAnchor: [15,15]}),
         coffee: L.icon({iconUrl: 'coffee.png', iconSize: [30,30], iconAnchor: [15,15]}),
-        mountain: L.icon({iconUrl: 'mountain.png', iconSize: [30,30], iconAnchor: [15,15]})
+        mountain: L.icon({iconUrl: 'mountain.png', iconSize: [30,30], iconAnchor: [15,15]}),
+        mt1: L.icon({iconUrl: 'mt1.png', iconSize: [24,24], iconAnchor: [12,12]}),
+        mt2: L.icon({iconUrl: 'mt2.png', iconSize: [24,24], iconAnchor: [12,12]}),
+        mt3: L.icon({iconUrl: 'mt3.png', iconSize: [24,24], iconAnchor: [12,12]}),
+        mt4: L.icon({iconUrl: 'mt4.png', iconSize: [24,24], iconAnchor: [12,12]}),
+        mt5: L.icon({iconUrl: 'mt5.png', iconSize: [24,24], iconAnchor: [12,12]}),
+        mt6: L.icon({iconUrl: 'mt6.png', iconSize: [24,24], iconAnchor: [12,12]}),
+        mt7: L.icon({iconUrl: 'mt7.png', iconSize: [24,24], iconAnchor: [12,12]}),
+        mt8: L.icon({iconUrl: 'mt8.png', iconSize: [24,24], iconAnchor: [12,12]})
       };
 
 const gpxLayer = new L.GPX(gpxText, {
@@ -347,15 +505,70 @@ const bounds = myPoints.reduce((bounds, point) => {
       zIndexOffset: 1000
     }).addTo(map);*/
 
-    L.popup({ className: 'elevationpop' })
-      .setLatLng([peak.lat/*+0.0008*/, peak.lon])
+    for (let iclimb = 0; iclimb < climbs.length; iclimb++) {
+/*      L.popup({ className: 'elevationpop' })
+      .setLatLng([myPoints[climbs[iclimb][0]].lat, myPoints[climbs[iclimb][0]].lon])
+      .setContent(`<span style='font-size: 10px;'>⛰ Dep ${iclimb + 1}: ${climbs[iclimb][2].gain.toFixed(0)}m</span>`)
+      .addTo(map); 
+      
+      L.popup({ className: 'elevationpop' })
+      .setLatLng([myPoints[climbs[iclimb][1]].lat, myPoints[climbs[iclimb][1]].lon])
+      .setContent(`<span style='font-size: 10px;'>⛰ Arr ${iclimb + 1}</span>`)
+      .addTo(map);*/
+
+      if (iclimb == 0) {
+        L.marker([myPoints[climbs[iclimb][0]].lat, myPoints[climbs[iclimb][0]].lon], {
+        icon: icons.mt1,
+        zIndexOffset: 1000
+      }).addTo(map).bindPopup(`${climbs[iclimb][2].distKm.toFixed(1)}km, ${climbs[iclimb][2].gain.toFixed(0)}m D+, ${climbs[iclimb][2].avgGrad.toFixed(1)}%`);
+      } else if (iclimb == 1) {
+        L.marker([myPoints[climbs[iclimb][0]].lat, myPoints[climbs[iclimb][0]].lon], {
+        icon: icons.mt2,
+        zIndexOffset: 1000
+      }).addTo(map).bindPopup(`${climbs[iclimb][2].distKm.toFixed(1)}km, ${climbs[iclimb][2].gain.toFixed(0)}m D+, ${climbs[iclimb][2].avgGrad.toFixed(1)}%`);
+      } else if (iclimb == 2) {
+        L.marker([myPoints[climbs[iclimb][0]].lat, myPoints[climbs[iclimb][0]].lon], {
+        icon: icons.mt3,
+        zIndexOffset: 1000
+      }).addTo(map).bindPopup(`${climbs[iclimb][2].distKm.toFixed(1)}km, ${climbs[iclimb][2].gain.toFixed(0)}m D+, ${climbs[iclimb][2].avgGrad.toFixed(1)}%`);
+      } else if (iclimb == 3) {
+        L.marker([myPoints[climbs[iclimb][0]].lat, myPoints[climbs[iclimb][0]].lon], {
+        icon: icons.mt4,
+        zIndexOffset: 1000
+      }).addTo(map).bindPopup(`${climbs[iclimb][2].distKm.toFixed(1)}km, ${climbs[iclimb][2].gain.toFixed(0)}m D+, ${climbs[iclimb][2].avgGrad.toFixed(1)}%`);
+      } else if (iclimb == 4) {
+        L.marker([myPoints[climbs[iclimb][0]].lat, myPoints[climbs[iclimb][0]].lon], {
+        icon: icons.mt5,
+        zIndexOffset: 1000
+      }).addTo(map).bindPopup(`${climbs[iclimb][2].distKm.toFixed(1)}km, ${climbs[iclimb][2].gain.toFixed(0)}m D+, ${climbs[iclimb][2].avgGrad.toFixed(1)}%`);
+      } else if (iclimb == 5) {
+        L.marker([myPoints[climbs[iclimb][0]].lat, myPoints[climbs[iclimb][0]].lon], {
+        icon: icons.mt6,
+        zIndexOffset: 1000
+      }).addTo(map).bindPopup(`${climbs[iclimb][2].distKm.toFixed(1)}km, ${climbs[iclimb][2].gain.toFixed(0)}m D+, ${climbs[iclimb][2].avgGrad.toFixed(1)}%`);
+      } else if (iclimb == 6) {
+        L.marker([myPoints[climbs[iclimb][0]].lat, myPoints[climbs[iclimb][0]].lon], {
+        icon: icons.mt7,
+        zIndexOffset: 1000
+      }).addTo(map).bindPopup(`${climbs[iclimb][2].distKm.toFixed(1)}km, ${climbs[iclimb][2].gain.toFixed(0)}m D+, ${climbs[iclimb][2].avgGrad.toFixed(1)}%`);
+      } else if (iclimb == 7) {
+        L.marker([myPoints[climbs[iclimb][0]].lat, myPoints[climbs[iclimb][0]].lon], {
+        icon: icons.mt8,
+        zIndexOffset: 1000
+      }).addTo(map).bindPopup(`${climbs[iclimb][2].distKm.toFixed(1)}km, ${climbs[iclimb][2].gain.toFixed(0)}m D+, ${climbs[iclimb][2].avgGrad.toFixed(1)}%`);
+      }
+      
+    } 
+
+    /* L.popup({ className: 'elevationpop' })
+      .setLatLng([peak.lat, peak.lon])
       .setContent(`<span style='font-size: 10px;'>⛰ Max : ${peak.ele.toFixed(0)}m</span>`)
       .addTo(map);
 
       L.popup({ className: 'elevationpop' })
       .setLatLng([trough.lat, trough.lon])
       .setContent(`<span style='font-size: 10px;'>⛰ Min : ${trough.ele.toFixed(0)}m</span>`)
-      .addTo(map);
+      .addTo(map); */
 
      // coffee popup + marker
     if (coffeeLat && coffeeLon) {
