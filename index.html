@@ -240,11 +240,11 @@
 
       const simpIndices = [];
       simplified.coordinates.forEach(sc => {  // FIXED: geometry access [web:51]
-        let minDist = Infinity, bestIdx = 0;
+        let minDist = Infinity, bestIdx = 0, maxoi = 0;
         coords.forEach((oc, oi) => {
-          if (oi <= bestIdx) return;
+          if (oi <= maxoi) return;
           const d = turf.distance(sc, oc, { units: 'meters' });
-          if (d < minDist) { minDist = d; bestIdx = oi; }
+          if (d < minDist) { minDist = d; bestIdx = oi; maxoi = oi;}
         });
         /*if (minDist < 10)*/ simpIndices.push(bestIdx);
       });
