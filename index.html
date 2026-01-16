@@ -409,12 +409,12 @@ function distanceToNearestVertex(latlngs, target, toleranceMeters, mapInstance) 
       }
 
       const icons = {
-        water: L.icon({iconUrl: 'water.png', iconSize: [30,30], iconAnchor: [15,15]}),
-        tap: L.icon({iconUrl: 'tap.png', iconSize: [30,30], iconAnchor: [15,15]}),
-        fountain: L.icon({iconUrl: 'fountain.png', iconSize: [30,30], iconAnchor: [15,15]}),
-        toilets: L.icon({iconUrl: 'toilets.png', iconSize: [30,30], iconAnchor: [15,15]}),
-        coffee: L.icon({iconUrl: 'coffee.png', iconSize: [30,30], iconAnchor: [15,15]}),
-        mountain: L.icon({iconUrl: 'mountain.png', iconSize: [30,30], iconAnchor: [15,15]}),
+        water: L.icon({iconUrl: 'water.png', iconSize: [24,24], iconAnchor: [12,12]}),
+        tap: L.icon({iconUrl: 'tap.png', iconSize: [24,24], iconAnchor: [12,12]}),
+        fountain: L.icon({iconUrl: 'fountain.png', iconSize: [24,24], iconAnchor: [12,12]}),
+        toilets: L.icon({iconUrl: 'toilets.png', iconSize: [24,24], iconAnchor: [12,12]}),
+        coffee: L.icon({iconUrl: 'coffee.png', iconSize: [24,24], iconAnchor: [12,12]}),
+        mountain: L.icon({iconUrl: 'mountain.png', iconSize: [24,24], iconAnchor: [12,12]}),
         mt1: L.icon({iconUrl: 'mt1.png', iconSize: [24,24], iconAnchor: [12,12]}),
         mt2: L.icon({iconUrl: 'mt2.png', iconSize: [24,24], iconAnchor: [12,12]}),
         mt3: L.icon({iconUrl: 'mt3.png', iconSize: [24,24], iconAnchor: [12,12]}),
@@ -433,7 +433,7 @@ const gpxLayer = new L.GPX(gpxText, {
     opacity: 0.9
   },
   markers: { startIcon: 'start.ico', endIcon: 'finish.ico' },
-  marker_options: { iconSize: [12, 12], iconAnchor: [6, 6] }
+  marker_options: { iconSize: [20, 20], iconAnchor: [10, 10] }
 })
 .on('loaded', function (e) {
   const gpxLayer = e.target;
