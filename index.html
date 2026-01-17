@@ -66,6 +66,14 @@
   margin-right: 20px;
   font-size: 10px;
 }
+    @keyframes fade {
+  from { opacity: 0.5; }
+  to { opacity: 1.0; }
+}
+.blinking {
+  animation: fade 1s infinite alternate;
+}
+
 
   </style>
 </head>
@@ -544,7 +552,8 @@ map.on('popupopen', function(e) {
   ];
   endMarker = L.marker(newLatLng, {
         icon: icons.summit,
-        zIndexOffset: 1000
+        zIndexOffset: 1000,
+    className: 'blinking'
       }).addTo(map);
 });
 
