@@ -66,13 +66,6 @@
   margin-right: 20px;
   font-size: 10px;
 }
-    @keyframes fade {
-  from { opacity: 0.5; }
-  to { opacity: 1.0; }
-}
-.blinking {
-  animation: fade 1s infinite alternate;
-}
 
 
   </style>
@@ -432,7 +425,7 @@ function distanceToNearestVertex(latlngs, target, toleranceMeters, mapInstance) 
         asc7: L.icon({iconUrl: 'asc7.png', iconSize: [24,24], iconAnchor: [12,12]}),
         asc8: L.icon({iconUrl: 'asc8.png', iconSize: [24,24], iconAnchor: [12,12]}),
         asc9: L.icon({iconUrl: 'asc9.png', iconSize: [24,24], iconAnchor: [12,12]}),
-        summit: L.icon({iconUrl: 'summit.png', iconSize: [24,24], iconAnchor: [12,12]})
+        summit: L.icon({iconUrl: 'summit.png', iconSize: [30,30], iconAnchor: [15,15]})
       };
 
 const gpxLayer = new L.GPX(gpxText, {
