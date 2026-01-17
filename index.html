@@ -67,6 +67,13 @@
   font-size: 10px;
 }
 
+@keyframes blink {
+  0%, 50% { opacity: 1; }
+  51%, 100% { opacity: 0.3; }
+}
+.leaflet-marker-icon .blinking-marker > div {
+  animation: blink 1s infinite;
+}
 
   </style>
 </head>
@@ -428,7 +435,14 @@ function distanceToNearestVertex(latlngs, target, toleranceMeters, mapInstance) 
         summit: L.icon({iconUrl: 'summit.png', iconSize: [30,30], iconAnchor: [15,15]})
       };
 
-const gpxLayer = new L.GPX(gpxText, {
+var blinkingIcon = L.divIcon({
+  className: 'blinking-marker',
+  iconSize: [30, 30],  // Match your icon size
+  iconAnchor: [15, 15], // Center anchor
+  html: '<div><img src="summit.png"</div>'  // Or img tag for custom icon
+});
+
+      const gpxLayer = new L.GPX(gpxText, {
   async: true,
   polyline_options: {
     color: 'blue',
@@ -544,9 +558,8 @@ map.on('popupopen', function(e) {
    myPoints[climbs[climbIndex][1]].lon
   ];
   endMarker = L.marker(newLatLng, {
-        icon: icons.summit,
+        icon: blinkingIcon,
         zIndexOffset: 1000,
-    className: 'blinking'
       }).addTo(map);
 });
 
