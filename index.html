@@ -528,27 +528,28 @@ const bounds = myPoints.reduce((bounds, point) => {
       climbMarkers.push(thisMarker);
     } 
 
-/*    let prevMarker = null; // Tracks the currently displayed second marker
+    let endMarker = null; // Tracks the currently displayed second marker
 
 map.on('popupopen', function(e) {
   const sourceMarker = e.popup._source; // Marker whose popup opened
-  if (prevMarker) {
-    map.removeLayer(prevMarker); // Hide previous second marker
+  if (endMarker) {
+    map.removeLayer(endMarker); // Hide previous second marker
   }
+    const climbIndex = climbMarkers.indexOf(sourceMarker); 
   // Create new marker, e.g., 0.001 degrees northeast of source
   const newLatLng = [
-    myPoints[climbs[0][1]].lat,
-   myPoints[climbs[0][1]].lon
+    myPoints[climbs[climbIndex][1]].lat,
+   myPoints[climbs[climbIndex][1]].lon
   ];
-  prevMarker = L.marker(newLatLng).addTo(map);
+  endMarker = L.marker(newLatLng).addTo(map);
 });
 
 map.on('popupclose', function(e) {
-  if (prevMarker) {
-    map.removeLayer(prevMarker);
-    prevMarker = null;
+  if (endMarker) {
+    map.removeLayer(endMarker);
+    endMarker = null;
   }
-}); */
+}); 
 
     /* L.popup({ className: 'elevationpop' })
       .setLatLng([peak.lat, peak.lon])
