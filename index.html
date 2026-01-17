@@ -423,7 +423,8 @@ function distanceToNearestVertex(latlngs, target, toleranceMeters, mapInstance) 
         asc6: L.icon({iconUrl: 'asc6.png', iconSize: [24,24], iconAnchor: [12,12]}),
         asc7: L.icon({iconUrl: 'asc7.png', iconSize: [24,24], iconAnchor: [12,12]}),
         asc8: L.icon({iconUrl: 'asc8.png', iconSize: [24,24], iconAnchor: [12,12]}),
-        asc9: L.icon({iconUrl: 'asc9.png', iconSize: [24,24], iconAnchor: [12,12]})
+        asc9: L.icon({iconUrl: 'asc9.png', iconSize: [24,24], iconAnchor: [12,12]}),
+        summit: L.icon({iconUrl: 'summit.png', iconSize: [10,10], iconAnchor: [5,5]})
       };
 
 const gpxLayer = new L.GPX(gpxText, {
@@ -541,7 +542,10 @@ map.on('popupopen', function(e) {
     myPoints[climbs[climbIndex][1]].lat,
    myPoints[climbs[climbIndex][1]].lon
   ];
-  endMarker = L.marker(newLatLng).addTo(map);
+  endMarker = L.marker(newLatLng, {
+        icon: icons.summit,
+        zIndexOffset: 1000
+      }).addTo(map);
 });
 
 map.on('popupclose', function(e) {
