@@ -568,6 +568,28 @@ const bounds = myPoints.reduce((bounds, point) => {
       
     } 
 
+    let prevMarker = null; // Tracks the currently displayed second marker
+
+map.on('popupopen', function(e) {
+  const sourceMarker = e.popup._source; // Marker whose popup opened
+  if (prevMarker) {
+    map.removeLayer(prevMarker); // Hide previous second marker
+  }
+  // Create new marker, e.g., 0.001 degrees northeast of source
+  const newLatLng = [
+    myPoints[climbs[0][1]].lat,
+   myPoints[climbs[0][1]].lon
+  ];
+  prevMarker = L.marker(newLatLng).addTo(map);
+});
+
+map.on('popupclose', function(e) {
+  if (prevMarker) {
+    map.removeLayer(prevMarker);
+    prevMarker = null;
+  }
+});
+
     /* L.popup({ className: 'elevationpop' })
       .setLatLng([peak.lat, peak.lon])
       .setContent(`<span style='font-size: 10px;'>⛰ Max : ${peak.ele.toFixed(0)}m</span>`)
