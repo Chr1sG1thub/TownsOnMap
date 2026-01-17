@@ -508,6 +508,8 @@ const bounds = myPoints.reduce((bounds, point) => {
       zIndexOffset: 1000
     }).addTo(map);*/
 
+    let climbMarkers[];
+    
     for (let iclimb = 0; iclimb < climbs.length; iclimb++) {
 /*      L.popup({ className: 'elevationpop' })
       .setLatLng([myPoints[climbs[iclimb][0]].lat, myPoints[climbs[iclimb][0]].lon])
@@ -519,11 +521,11 @@ const bounds = myPoints.reduce((bounds, point) => {
       .setContent(`<span style='font-size: 10px;'>⛰ Arr ${iclimb + 1}</span>`)
       .addTo(map);*/
 
-        L.marker([myPoints[climbs[iclimb][0]].lat, myPoints[climbs[iclimb][0]].lon], {
+       let thisMarker = L.marker([myPoints[climbs[iclimb][0]].lat, myPoints[climbs[iclimb][0]].lon], {
         icon: icons['asc' + (iclimb + 1)],
         zIndexOffset: 1000
       }).addTo(map).bindPopup(`${climbs[iclimb][2].distKm.toFixed(1)}km, ${climbs[iclimb][2].gain.toFixed(0)}m D+, ${climbs[iclimb][2].avgGrad.toFixed(1)}%`);
-      
+      climbMarkers.push(thisMarker);
     } 
 
 /*    let prevMarker = null; // Tracks the currently displayed second marker
