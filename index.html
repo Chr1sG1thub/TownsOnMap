@@ -79,6 +79,7 @@
 </head>
 
 <body>
+  <div id="attendez" style="text-align: center!>Attendez, SVP...</div>
   <div id="controls" class="controls">
     <input type="file" id="gpxFile" accept=".gpx" style="margin-right: 10px;">
     <!-- <span id="urlStatus">Checking URL parameters...</span> -->
@@ -693,6 +694,9 @@ var popup = L.popup({ pane: 'customPopupPane' });
   //      statusEl.innerHTML += '<br><span style="color: orange">No gpxFile param - use file input or ?gpxFile=route.gpx</span>';
       }
     }
+
+            document.getElementById('attendez').style.display = "none";
+
 
     main();
   </script>
