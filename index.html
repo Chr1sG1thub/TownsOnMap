@@ -548,6 +548,7 @@ const bounds = myPoints.reduce((bounds, point) => {
 
 map.on('popupopen', function(e) {
   const sourceMarker = e.popup._source; // Marker whose popup opened
+  if (sourceMarker) {
   if (endMarker) {
     map.removeLayer(endMarker); // Hide previous second marker
   }
@@ -562,6 +563,7 @@ map.on('popupopen', function(e) {
         zIndexOffset: 1000,
       }).addTo(map);
 });
+  }
 
 map.on('popupclose', function(e) {
   if (endMarker) {
