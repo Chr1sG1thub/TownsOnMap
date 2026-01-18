@@ -162,7 +162,7 @@
           //      segPoints = points.slice(indices[j] + 1, indices[i]);
           //       }
           const details = climbRating({ points: segPoints });
-          console.log(i, j, details.rating);
+          if (details.rating > 0.1) console.log(i, j, details.rating);
           let r = sign === 0 ? Math.abs(details.rating) : details.rating * sign;
           if (r > maxRating) {
             maxRating = r;
