@@ -148,7 +148,7 @@
 
       if (indices.length < 2) return [];
 
-
+console.log("start of brute force");
       // BRUTE-FORCE: Find max rating segment (O(n^2), fine post-simplify)
       let maxRating = threshold;
       let bestRange = null;
@@ -162,7 +162,7 @@
           //      segPoints = points.slice(indices[j] + 1, indices[i]);
           //       }
           const details = climbRating({ points: segPoints });
-          if (details.rating > 0.1) console.log(i, j, details.rating);
+          if (details.rating > 0.12) console.log(i, j, details.rating);
           let r = sign === 0 ? Math.abs(details.rating) : details.rating * sign;
           if (r > maxRating) {
             maxRating = r;
