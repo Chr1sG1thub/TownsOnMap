@@ -437,12 +437,17 @@ function distanceToNearestVertex(latlngs, target, toleranceMeters, mapInstance) 
         summit: L.icon({iconUrl: 'summit.png', iconSize: [30,30], iconAnchor: [15,15]})
       };
 
-var blinkingIcon = L.divIcon({
+var blinkingIcon = /*L.divIcon({
   className: 'blinking-marker',
   iconSize: [30, 30],  // Match your icon size
   iconAnchor: [15, 15], // Center anchor
   html: '<div><div>x</div></div>'  // Or img tag for custom icon
 });
+
+
+*/L.divIcon({html: '<div class="blinking-marker"><div>X</div></div>'});
+
+      
 
       const gpxLayer = new L.GPX(gpxText, {
   async: true,
