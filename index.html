@@ -617,7 +617,7 @@ var popup = L.popup({ pane: 'customPopupPane' });
       iconSize: [ft.Place.length * 10, 20],
       iconAnchor: [ft.Place.length * 3, 7]
     });
-    L.marker([ft.nLat, ft.nLon], { icon: myIcon, zIndexOffset: 1000 }).addTo(map);
+    L.marker([ft.nLat, ft.nLon], { icon: myIcon, zIndexOffset: 500 }).addTo(map);
   });
 
   pdeEncountered.forEach(pe => {
