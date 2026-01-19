@@ -542,7 +542,7 @@ const bounds = myPoints.reduce((bounds, point) => {
        let thisMarker = L.marker([myPoints[climbs[iclimb][0]].lat, myPoints[climbs[iclimb][0]].lon], {
         icon: icons['asc' + (iclimb + 1)],
         zIndexOffset: 1000
-      }).addTo(map).bindPopup(`${climbs[iclimb][2].distKm.toFixed(1)}km, ${climbs[iclimb][2].gain.toFixed(0)}m D+, ${climbs[iclimb][2].avgGrad.toFixed(1)}%`);
+      }).addTo(map).bindPopup(`${climbs[iclimb][2].distKm.toFixed(1)}km, ${climbs[iclimb][2].gain.toFixed(0)}m D+, ${climbs[iclimb][2].avgGrad.toFixed(1)}%`, { className: 'elevationpop' });
       climbMarkers.push(thisMarker);
     } 
 
