@@ -441,7 +441,7 @@ var blinkingIcon = L.divIcon({
   className: 'blinking-marker',
   iconSize: [30, 30],  // Match your icon size
   iconAnchor: [15, 15], // Center anchor
-  html: '<div><img src="summit.png"></div>'  // Or img tag for custom icon
+  html: '<div>x</div>'  // Or img tag for custom icon
 });
 
       const gpxLayer = new L.GPX(gpxText, {
@@ -561,7 +561,7 @@ map.on('popupopen', function(e) {
    myPoints[climbs[climbIndex][1]].lon
   ];
   endMarker = L.marker(newLatLng, {
-        icon: icons.summit,
+        icon: blinkingIcon,
         zIndexOffset: 1000,
       }).addTo(map);
   }
