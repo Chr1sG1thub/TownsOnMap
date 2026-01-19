@@ -21,10 +21,10 @@
     .controls { margin-bottom: 20px; padding: 10px; background: #f0f0f0; border-radius: 5px; display: none;}
     .status { margin: 10px 0; padding: 10px; background: #e0f7fa; border-radius: 5px; font-size: 14px; }
     
-.elevationpop .leaflet-popup-content-wrapper {background-color: palegreen; padding: 4px;}
+.elevationpop .leaflet-popup-content-wrapper {background-color: peachpuff; padding: 4px;}
     
 .elevationpop .leaflet-popup-tip {
-   background-color: palegreen; width: 10px;  margin-top: -10px; margin-right: 16px; margin-bottom: 0px; margin-left: 16px;
+   background-color: peachpuff; width: 10px;  margin-top: -10px; margin-right: 16px; margin-bottom: 0px; margin-left: 16px;
 }
 
 .elevationpop .leaflet-popup-content {
@@ -542,7 +542,7 @@ const bounds = myPoints.reduce((bounds, point) => {
        let thisMarker = L.marker([myPoints[climbs[iclimb][0]].lat, myPoints[climbs[iclimb][0]].lon], {
         icon: icons['asc' + (iclimb + 1)],
         zIndexOffset: 1000
-      }).addTo(map).bindPopup(`${climbs[iclimb][2].distKm.toFixed(1)}km, ${climbs[iclimb][2].gain.toFixed(0)}m D+, ${climbs[iclimb][2].avgGrad.toFixed(1)}%`, { className: 'elevationpop' });
+      }).addTo(map).bindPopup(`⛰ ${climbs[iclimb][2].distKm.toFixed(1)}km, ${climbs[iclimb][2].gain.toFixed(0)}m D+, ${climbs[iclimb][2].avgGrad.toFixed(1)}%`, { className: 'elevationpop' });
       climbMarkers.push(thisMarker);
     } 
 
