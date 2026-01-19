@@ -79,7 +79,7 @@
 </head>
 
 <body>
-  <!--<div id="attendez" style="text-align: center">Attendez, SVP...</div> -->
+  <div id="attendez" style="text-align: center; display: none;">Attendez, SVP...</div> -->
   <div id="controls" class="controls">
     <input type="file" id="gpxFile" accept=".gpx" style="margin-right: 10px;">
     <!-- <span id="urlStatus">Checking URL parameters...</span> -->
@@ -634,6 +634,7 @@ var popup = L.popup({ pane: 'customPopupPane' });
 
     async function main() {
       
+      document.getElementById('attendez').style.display = "block";
       const fileInput = document.getElementById('gpxFile');
 //      const statusEl = document.getElementById('urlStatus');
       
@@ -680,6 +681,8 @@ var popup = L.popup({ pane: 'customPopupPane' });
           if (response.ok) {
             const gpxText = await response.text();
             await loadGPXWithText(gpxText, coffeeLat, coffeeLon, dist, deniv);
+            document.getElementById('attendez').style.display = "none";
+
    //         statusEl.innerHTML += '<br><span style="color: green">✅ Server GPX loaded!</span>';
           } else {
    //         statusEl.innerHTML += `<br><span style="color: red">❌ Failed: ${response.status}</span>`;
@@ -695,8 +698,7 @@ var popup = L.popup({ pane: 'customPopupPane' });
       }
     }
 
-          //  document.getElementById('attendez').style.display = "none";
-
+    
 
     main();
   </script>
