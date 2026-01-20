@@ -41,7 +41,7 @@
    background-color: wheat; width: 10px;  margin-top: -10px; margin-right: 16px; margin-bottom: 0px; margin-left: 16px;
 }
 
-.cafepop .leafle-popup-content {
+.cafepop .leaflet-popup-content {
   margin-top: 3px;
   margin-left: 0px;
   margin-bottom: 0px;
@@ -515,7 +515,7 @@ const bounds = myPoints.reduce((bounds, point) => {
     // parcours 
     if (dist && dist !== "N/A") {
 //      const Point = interpolatePointOnLine(poplatlngs, 0.25, map);
-      L.popup({ className: 'parcourspop' })
+      L.popup({ className: 'parcourspop', autoClose: false })
         .setLatLng(L.latLng((bounds.maxLat + bounds.minLat)/2, (bounds.maxLon + bounds.minLon)/2))
         .setContent(`<span style='font-size: 10px;'>🚴 : ${dist}km, ${deniv}m D+</span>`)
         .addTo(map);
@@ -615,7 +615,7 @@ map.getPane('customPopupPane').style.zIndex = 850;
 
 //var popup = L.popup({ pane: 'customPopupPane' });
       
-    L.popup({ className: 'cafepop', pane: 'customPopupPane' })
+    L.popup({ className: 'cafepop', pane: 'customPopupPane', autoClose: false })
         .setLatLng([parseFloat(coffeeLat)/*+0.0008*/, parseFloat(coffeeLon)])
         .setContent(`<span style='font-size: 10px;'>☕ à ${kms}km</span>`)
         .addTo(map);
