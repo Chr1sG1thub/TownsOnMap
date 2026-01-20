@@ -566,7 +566,7 @@ const bounds = myPoints.reduce((bounds, point) => {
 
   document.getElementById('togglePlaces').onclick = function () {
     if (placesVisible) {
-      map.removeLayer(cafesGroup);
+      map.removeLayer(placesGroup);
       placesVisible = false;
       document.getElementById('togglePlaces').style.opacity = 0.4;
     } else {
@@ -679,6 +679,8 @@ map.getPane('customPopupPane').style.zIndex = 850;
   });
 
  // towns & water markers
+  var placesGroup = L.layerGroup();
+  
   filteredTowns.forEach(ft => {
     const myIcon = L.divIcon({
       className: 'custom-div-icon',
@@ -686,8 +688,13 @@ map.getPane('customPopupPane').style.zIndex = 850;
       iconSize: [ft.Place.length * 10, 20],
       iconAnchor: [ft.Place.length * 3, 7]
     });
-    L.marker([ft.nLat, ft.nLon], { icon: myIcon, zIndexOffset: 500 }).addTo(map);
+    var placesMarker = L.marker([ft.nLat, ft.nLon], { icon: myIcon, zIndexOffset: 500 });
+    
+   placesGroup.addLayer(placesMarker);
+    
   });
+  placesGroup.addTo(map);
+
 
       // Create an empty LayerGroup
 var eauGroup = L.layerGroup();
