@@ -521,7 +521,7 @@ const bounds = myPoints.reduce((bounds, point) => {
         .addTo(map);
     }
 
-/***    // peak popup + marker
+/*    // peak popup + marker
     const maxEleIndex = myPoints.reduce((maxIdx, pt, idx, arr) =>
       arr[maxIdx]?.ele > pt.ele ? maxIdx : idx, 0
     );
@@ -537,8 +537,8 @@ const bounds = myPoints.reduce((bounds, point) => {
     /*const peakMarker = L.marker([peak.lat, peak.lon], {
       icon: icons.mountain,
       zIndexOffset: 1000
-    }).addTo(map);*/
-*///
+    }).addTo(map);
+*/
     let climbMarkers = [];
     
     for (let iclimb = 0; iclimb < climbs.length; iclimb++) {
