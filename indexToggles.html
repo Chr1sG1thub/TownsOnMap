@@ -689,13 +689,21 @@ map.getPane('customPopupPane').style.zIndex = 850;
     L.marker([ft.nLat, ft.nLon], { icon: myIcon, zIndexOffset: 500 }).addTo(map);
   });
 
+      // Create an empty LayerGroup
+var eauGroup = L.layerGroup();
+
+
   pdeEncountered.forEach(pe => {
     let iconToUse = icons.water;
     if (pe.Type === 'Fontaine') iconToUse = icons.fountain;
     else if (pe.Type === 'Robinet') iconToUse = icons.tap;
     else if (pe.Type === 'Toilettes') iconToUse = icons.toilets;
 
-    L.marker([pe.Lat, pe.Lon], { icon: iconToUse }).addTo(map);
+    const eauMarker = L.marker([pe.Lat, pe.Lon], { icon: iconToUse });
+
+     eauGroup.addLayer(eauMarker);  
+
+    
   });
 })
 .addTo(map);
