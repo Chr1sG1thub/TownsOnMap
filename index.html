@@ -27,7 +27,7 @@
    background-color: peachpuff; width: 10px;  margin-top: -10px; margin-right: 16px; margin-bottom: 0px; margin-left: 16px;
 }
 
-.elevationpop .leaflet-popup-content {
+.elevationpop .leaflet--content {
   margin-top: 3px;
   margin-left: 0px;
   margin-bottom: 0px;
@@ -35,13 +35,13 @@
   font-size: 10px;
 }
 
-.cafepop .leaflet-popup-content-wrapper {background-color: wheat; padding: 4px;}
+.cafepop .leaflet--content-wrapper {background-color: wheat; padding: 4px;}
     
-.cafepop .leaflet-popup-tip {
+.cafepop .leaflet--tip {
    background-color: wheat; width: 10px;  margin-top: -10px; margin-right: 16px; margin-bottom: 0px; margin-left: 16px;
 }
 
-.cafepop .leaflet-popup-content {
+.cafepop .leaflet--content {
   margin-top: 3px;
   margin-left: 0px;
   margin-bottom: 0px;
@@ -49,17 +49,17 @@
   font-size: 10px;
 }
 
-.parcourspop .leaflet-popup-content-wrapper {background-color: powderblue; padding: 4px;}
+.parcourspop .leaflet--content-wrapper {background-color: powderblue; padding: 4px;}
     
-.parcourspop .leaflet-popup-tip {
+.parcourspop .leaflet--tip {
    <!--background-color: powderblue; width: 10px;  margin-top: -10px; margin-right: 16px; margin-bottom: 0px; margin-left: 16px;-->
      display: none;
 }
-.parcourspop .leaflet-popup-tip-container {
+.parcourspop .leaflet--tip-container {
    <!--background-color: powderblue; width: 10px;  margin-top: -10px; margin-right: 16px; margin-bottom: 0px; margin-left: 16px;-->
      display: none;
 }
-.parcourspop .leaflet-popup-content {
+.parcourspop .leaflet--content {
   margin-top: 3px;
   margin-left: 0px;
   margin-bottom: 0px;
@@ -512,16 +512,16 @@ const bounds = myPoints.reduce((bounds, point) => {
   return bounds;
 }, { minLat: Infinity, maxLat: -Infinity, minLon: Infinity, maxLon: -Infinity });
 
-    // parcours popup
+    // parcours 
     if (dist && dist !== "N/A") {
-//      const popupPoint = interpolatePointOnLine(poplatlngs, 0.25, map);
-      L.popup({ className: 'parcourspop' })
+//      const Point = interpolatePointOnLine(poplatlngs, 0.25, map);
+      L.popup({ className: 'parcourspop', autoClose: false })
         .setLatLng(L.latLng((bounds.maxLat + bounds.minLat)/2, (bounds.maxLon + bounds.minLon)/2))
         .setContent(`<span style='font-size: 10px;'>🚴 : ${dist}km, ${deniv}m D+</span>`)
         .addTo(map);
     }
 
-    // peak popup + marker
+/***    // peak popup + marker
     const maxEleIndex = myPoints.reduce((maxIdx, pt, idx, arr) =>
       arr[maxIdx]?.ele > pt.ele ? maxIdx : idx, 0
     );
@@ -538,7 +538,7 @@ const bounds = myPoints.reduce((bounds, point) => {
       icon: icons.mountain,
       zIndexOffset: 1000
     }).addTo(map);*/
-
+*///
     let climbMarkers = [];
     
     for (let iclimb = 0; iclimb < climbs.length; iclimb++) {
@@ -614,7 +614,8 @@ map.on('popupclose', function(e) {
 map.getPane('customPopupPane').style.zIndex = 850;
 
 var popup = L.popup({ pane: 'customPopupPane' });
-    L.popup({ className: 'cafepop', pane: 'customPopupPane' })
+      
+    L.popup({ className: 'cafepop', pane: 'customPopupPane', autoClose: false })
         .setLatLng([parseFloat(coffeeLat)/*+0.0008*/, parseFloat(coffeeLon)])
         .setContent(`<span style='font-size: 10px;'>☕ à ${kms}km</span>`)
         .addTo(map);
