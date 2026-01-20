@@ -515,7 +515,7 @@ const bounds = myPoints.reduce((bounds, point) => {
     // parcours 
     if (dist && dist !== "N/A") {
 //      const Point = interpolatePointOnLine(poplatlngs, 0.25, map);
-      L.popup({ className: 'parcourspop', autoClose: 'false' })
+      L.popup({ className: 'parcourspop' })
         .setLatLng(L.latLng((bounds.maxLat + bounds.minLat)/2, (bounds.maxLon + bounds.minLon)/2))
         .setContent(`<span style='font-size: 10px;'>🚴 : ${dist}km, ${deniv}m D+</span>`)
         .addTo(map);
@@ -615,7 +615,7 @@ map.getPane('customPopupPane').style.zIndex = 850;
 
 //var popup = L.popup({ pane: 'customPopupPane' });
       
-    L.popup({ className: 'cafepop', pane: 'customPopupPane', autoClose: 'false' })
+    L.popup({ className: 'cafepop', pane: 'customPopupPane' })
         .setLatLng([parseFloat(coffeeLat)/*+0.0008*/, parseFloat(coffeeLon)])
         .setContent(`<span style='font-size: 10px;'>☕ à ${kms}km</span>`)
         .addTo(map);
