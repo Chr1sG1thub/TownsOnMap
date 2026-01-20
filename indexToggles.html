@@ -95,10 +95,11 @@
   
   <div id="map"></div>
 
-<button id="toggleAscensions" title="Ascensions" style="position: absolute; top: 50px; right: 20px; font-size: 16px; width: 50px; z-index: 1001; border-radius: 6px"><img src="mountain.png" style="height: 30px"></button>
+<div id="toggleButtons">
+  <button id="toggleAscensions" title="Ascensions" style="position: absolute; top: 50px; right: 20px; font-size: 16px; width: 50px; z-index: 1001; border-radius: 6px"><img src="mountain.png" style="height: 30px"></button>
 <button id="togglePlaces" title="Villages" style="position: absolute; top: 90px; right: 20px; font-size: 16px; width: 50px; z-index: 1001; border-radius: 6px"><img src="places.png" style="height: 30px"></button>
 <button id="toggleEau" title="Points d'Eau" style="position: absolute; top: 130px; right: 20px; font-size: 16px; width: 50px; z-index: 1001; border-radius: 6px;"><img src="water.png" style="height: 30px"></button>
-
+  </div>
 
   <script>
 
@@ -721,6 +722,7 @@ var eauGroup = L.layerGroup();
     async function main() {
       
       document.getElementById('attendez').style.display = "block";
+      document.getElementById('toggleButtons').style.display = "none";
       const fileInput = document.getElementById('gpxFile');
 //      const statusEl = document.getElementById('urlStatus');
       
@@ -768,6 +770,7 @@ var eauGroup = L.layerGroup();
             const gpxText = await response.text();
             await loadGPXWithText(gpxText, coffeeLat, coffeeLon, dist, deniv);
             document.getElementById('attendez').style.display = "none";
+            document.getElementById('toggleButtons').style.display = "block";
 
    //         statusEl.innerHTML += '<br><span style="color: green">✅ Server GPX loaded!</span>';
           } else {
