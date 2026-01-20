@@ -101,48 +101,7 @@
 
 
   <script>
-// Store visibility states
-  var ascensionsVisible = true;
-  var placesVisible = true;
-  var eauVisible = true;
 
-  // Toggle button event handler
-  document.getElementById('toggleAscensions').onclick = function () {
-    if (ascensionsVisible) {
-      map.removeLayer(ascensionsGroup);
-      ascensionsVisible = false;
-      document.getElementById('toggleAscensions').style.opacity = 0.4;
-    } else {
-      map.addLayer(ascensionsGroup);
-      ascensionsVisible = true;
-      document.getElementById('toggleAscensions').style.opacity = 1;
-   }
-  };
-
-  document.getElementById('togglePlaces').onclick = function () {
-    if (placesVisible) {
-      map.removeLayer(cafesGroup);
-      placesVisible = false;
-      document.getElementById('togglePlaces').style.opacity = 0.4;
-    } else {
-      map.addLayer(placesGroup);
-      placesVisible = true;
-      document.getElementById('togglePlaces').style.opacity = 1;
-   }
-  };
-
-    document.getElementById('toggleEau').onclick = function () {
-    if (eauVisible) {
-      map.removeLayer(eauGroup);
-      eauVisible = false;
-      document.getElementById('toggleEau').style.opacity = 0.4;
-    } else {
-      map.addLayer(eauGroup);
-      eauVisible = true;
-      document.getElementById('toggleEau').style.opacity = 1;
-   }
-  };
-  
     let map;
     let towns = [];
 
@@ -587,6 +546,48 @@ const bounds = myPoints.reduce((bounds, point) => {
       zIndexOffset: 1000
     }).addTo(map);
 */
+   // Store visibility states
+  var ascensionsVisible = true;
+  var placesVisible = true;
+  var eauVisible = true;
+
+  // Toggle button event handler
+  document.getElementById('toggleAscensions').onclick = function () {
+    if (ascensionsVisible) {
+      map.removeLayer(ascensionsGroup);
+      ascensionsVisible = false;
+      document.getElementById('toggleAscensions').style.opacity = 0.4;
+    } else {
+      map.addLayer(ascensionsGroup);
+      ascensionsVisible = true;
+      document.getElementById('toggleAscensions').style.opacity = 1;
+   }
+  };
+
+  document.getElementById('togglePlaces').onclick = function () {
+    if (placesVisible) {
+      map.removeLayer(cafesGroup);
+      placesVisible = false;
+      document.getElementById('togglePlaces').style.opacity = 0.4;
+    } else {
+      map.addLayer(placesGroup);
+      placesVisible = true;
+      document.getElementById('togglePlaces').style.opacity = 1;
+   }
+  };
+
+    document.getElementById('toggleEau').onclick = function () {
+    if (eauVisible) {
+      map.removeLayer(eauGroup);
+      eauVisible = false;
+      document.getElementById('toggleEau').style.opacity = 0.4;
+    } else {
+      map.addLayer(eauGroup);
+      eauVisible = true;
+      document.getElementById('toggleEau').style.opacity = 1;
+   }
+  };
+  
     let climbMarkers = [];
     var ascensionsGroup = L.layerGroup();
 
