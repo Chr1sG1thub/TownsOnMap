@@ -95,7 +95,14 @@
   
   <div id="map"></div>
 
+<div id="toggleButtons">
+  <button id="toggleAscensions" title="Ascensions" style="position: absolute; top: 30px; right: 25px; font-size: 16px; width: 50px; z-index: 1001; border-radius: 6px"><img src="mountain.png" style="height: 30px"></button>
+<button id="togglePlaces" title="Villages" style="position: absolute; top: 70px; right: 25px; font-size: 16px; width: 50px; z-index: 1001; border-radius: 6px"><img src="places.png" style="height: 30px"></button>
+<button id="toggleEau" title="Points d'Eau" style="position: absolute; top: 110px; right: 25px; font-size: 16px; width: 50px; z-index: 1001; border-radius: 6px;"><img src="water.png" style="height: 30px"></button>
+  </div>
+
   <script>
+
     let map;
     let towns = [];
 
@@ -540,7 +547,51 @@ const bounds = myPoints.reduce((bounds, point) => {
       zIndexOffset: 1000
     }).addTo(map);
 */
+   // Store visibility states
+  var ascensionsVisible = true;
+  var placesVisible = true;
+  var eauVisible = true;
+
+  // Toggle button event handler
+  document.getElementById('toggleAscensions').onclick = function () {
+    if (ascensionsVisible) {
+      map.removeLayer(ascensionsGroup);
+      ascensionsVisible = false;
+      document.getElementById('toggleAscensions').style.opacity = 0.4;
+    } else {
+      map.addLayer(ascensionsGroup);
+      ascensionsVisible = true;
+      document.getElementById('toggleAscensions').style.opacity = 1;
+   }
+  };
+
+  document.getElementById('togglePlaces').onclick = function () {
+    if (placesVisible) {
+      map.removeLayer(placesGroup);
+      placesVisible = false;
+      document.getElementById('togglePlaces').style.opacity = 0.4;
+    } else {
+      map.addLayer(placesGroup);
+      placesVisible = true;
+      document.getElementById('togglePlaces').style.opacity = 1;
+   }
+  };
+
+    document.getElementById('toggleEau').onclick = function () {
+    if (eauVisible) {
+      map.removeLayer(eauGroup);
+      eauVisible = false;
+      document.getElementById('toggleEau').style.opacity = 0.4;
+    } else {
+      map.addLayer(eauGroup);
+      eauVisible = true;
+      document.getElementById('toggleEau').style.opacity = 1;
+   }
+  };
+  
     let climbMarkers = [];
+    var ascensionsGroup = L.layerGroup();
+
     
     for (let iclimb = 0; iclimb < climbs.length; iclimb++) {
 /*      L.popup({ className: 'elevationpop' })
@@ -556,9 +607,12 @@ const bounds = myPoints.reduce((bounds, point) => {
        let thisMarker = L.marker([myPoints[climbs[iclimb][0]].lat, myPoints[climbs[iclimb][0]].lon], {
         icon: icons['asc' + (iclimb + 1)],
         zIndexOffset: 1000
-      }).addTo(map).bindPopup(`⛰ ${climbs[iclimb][2].distKm.toFixed(1)}km, ${climbs[iclimb][2].gain.toFixed(0)}m D+, ${climbs[iclimb][2].avgGrad.toFixed(1)}%`, { className: 'elevationpop' });
+      }).bindPopup(`⛰ ${climbs[iclimb][2].distKm.toFixed(1)}km, ${climbs[iclimb][2].gain.toFixed(0)}m D+, ${climbs[iclimb][2].avgGrad.toFixed(1)}%`, { className: 'elevationpop' });
+        ascensionsGroup.addLayer(thisMarker);  
+ 
       climbMarkers.push(thisMarker);
-    } 
+    }
+    ascensionsGroup.addTo(map);
 
     let endMarker = null; // Tracks the currently displayed second marker
 
@@ -626,6 +680,8 @@ map.getPane('customPopupPane').style.zIndex = 850;
   });
 
  // towns & water markers
+  var placesGroup = L.layerGroup();
+  
   filteredTowns.forEach(ft => {
     const myIcon = L.divIcon({
       className: 'custom-div-icon',
@@ -633,8 +689,17 @@ map.getPane('customPopupPane').style.zIndex = 850;
       iconSize: [ft.Place.length * 10, 20],
       iconAnchor: [ft.Place.length * 3, 7]
     });
-    L.marker([ft.nLat, ft.nLon], { icon: myIcon, zIndexOffset: 500 }).addTo(map);
+    var placesMarker = L.marker([ft.nLat, ft.nLon], { icon: myIcon, zIndexOffset: 500 });
+    
+   placesGroup.addLayer(placesMarker);
+    
   });
+  placesGroup.addTo(map);
+
+
+      // Create an empty LayerGroup
+var eauGroup = L.layerGroup();
+
 
   pdeEncountered.forEach(pe => {
     let iconToUse = icons.water;
@@ -642,8 +707,14 @@ map.getPane('customPopupPane').style.zIndex = 850;
     else if (pe.Type === 'Robinet') iconToUse = icons.tap;
     else if (pe.Type === 'Toilettes') iconToUse = icons.toilets;
 
-    L.marker([pe.Lat, pe.Lon], { icon: iconToUse }).addTo(map);
+    const eauMarker = L.marker([pe.Lat, pe.Lon], { icon: iconToUse });
+
+     eauGroup.addLayer(eauMarker);  
+
+    
   });
+  eauGroup.addTo(map);
+
 })
 .addTo(map);
   }
@@ -651,6 +722,7 @@ map.getPane('customPopupPane').style.zIndex = 850;
     async function main() {
       
       document.getElementById('attendez').style.display = "block";
+      document.getElementById('toggleButtons').style.display = "none";
       const fileInput = document.getElementById('gpxFile');
 //      const statusEl = document.getElementById('urlStatus');
       
@@ -698,6 +770,7 @@ map.getPane('customPopupPane').style.zIndex = 850;
             const gpxText = await response.text();
             await loadGPXWithText(gpxText, coffeeLat, coffeeLon, dist, deniv);
             document.getElementById('attendez').style.display = "none";
+            document.getElementById('toggleButtons').style.display = "block";
 
    //         statusEl.innerHTML += '<br><span style="color: green">✅ Server GPX loaded!</span>';
           } else {
