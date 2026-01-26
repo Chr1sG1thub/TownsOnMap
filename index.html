@@ -385,7 +385,9 @@ function distanceToNearestVertex(latlngs, target, toleranceMeters, mapInstance) 
 
       const climbs = findClimbs({points : myPoints});
 
-      console.log(climbs);
+      if (!climbs) document.getElementById('toggleAscensions').style.display = "none";
+
+      //console.log(climbs);
 
       const pdeproximityKm = 0.1;
       let pdeEncountered = [];
