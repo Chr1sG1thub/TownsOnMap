@@ -528,7 +528,7 @@ const bounds = myPoints.reduce((bounds, point) => {
       L.popup({ className: 'parcourspop', autoClose: false,
   closeOnClick: false })
         .setLatLng(L.latLng((bounds.maxLat + bounds.minLat)/2, (bounds.maxLon + bounds.minLon)/2))
-        .setContent(`<span style='font-size: 18px;'>🚴</span><span style='font-size: 12px;'> : <strong>${dist}km</strong>, <strong>${deniv}m D+</strong></span>`)
+        .setContent(`<span style='font-size: 16px;'>🚴</span><span style='font-size: 11px;'> : <strong>${dist}km</strong>, <strong>${deniv}m D+</strong></span>`)
         .addTo(map);
     }
 
@@ -676,7 +676,7 @@ map.getPane('customPopupPane').style.zIndex = 850;
     L.popup({ className: 'cafepop', pane: 'customPopupPane', autoClose: false,
   closeOnClick: false })
         .setLatLng([parseFloat(coffeeLat), parseFloat(coffeeLon)])
-        .setContent(`<span style='font-size: 18px;'>☕</span><span style='font-size: 11px;'> à <strong>${kms}km</strong></span>`)
+        .setContent(`<span style='font-size: 16px;'>☕</span><span style='font-size: 11px;'> à <strong>${kms}km</strong></span>`)
         .addTo(map);
     }
 
