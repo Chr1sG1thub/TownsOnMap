@@ -675,8 +675,8 @@ map.getPane('customPopupPane').style.zIndex = 850;
       
     L.popup({ className: 'cafepop', pane: 'customPopupPane', autoClose: false,
   closeOnClick: false })
-        .setLatLng([parseFloat(coffeeLat)/*+0.0008*/, parseFloat(coffeeLon)])
-        .setContent(`<span style='font-size: 11px;'>☕ à <strong>${kms}km</strong></span>`)
+        .setLatLng([parseFloat(coffeeLat), parseFloat(coffeeLon)])
+        .setContent(`<span style='font-size: 13px;'>☕</span><span style='font-size: 11px;'> à <strong>${kms}km</strong></span>`)
         .addTo(map);
     }
 
