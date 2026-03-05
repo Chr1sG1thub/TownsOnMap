@@ -380,10 +380,13 @@ function distanceToNearestVertex(latlngs, target, toleranceMeters, mapInstance) 
       }
     }
 
-      const myPoints = parseGPX(gpxText);
+    
+      const myPoints;
     
     async function loadGPXWithText(gpxText, coffeeLat, coffeeLon, dist, deniv) {
 
+    myPoints = parseGPX(gpxText);
+      
       const climbs = findClimbs({points : myPoints});
 
       if (climbs.length == 0) document.getElementById('toggleAscensions').style.display = "none";
