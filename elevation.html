@@ -823,7 +823,7 @@ var eauGroup = L.layerGroup();
         const ctx = canvas.getContext('2d');
         const w = canvas.width;
         const h = canvas.height;
-        const elevations = myPoints.map(p => p.ele);
+        const elevations = points.map(p => p.ele);
         const minEle = Math.min(...elevations);
         const maxEle = Math.max(...elevations);
         const range = maxEle - minEle || 1;
