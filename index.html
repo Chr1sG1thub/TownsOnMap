@@ -630,39 +630,43 @@ const ElevationProfileControl = L.Control.extend({
   },
 
 onAdd: function(map) {
-  const elediv = L.DomUtil.create('div', 'leaflet-control elevation-profile');
 
-  elediv._tooltip = L.tooltip(elediv, {
-    permanent: false,
-    direction: 'auto',
-    offset: [10, 10]
-  }).setContent('Profil').addTo(map);
 
-  const canvas = L.DomUtil.create('canvas', '', elediv);
-  canvas.width = this.options.width;
-  canvas.height = this.options.height;
-  canvas.style.background = '#f8f9fa';
-  canvas.style.border = '1px solid #dee2e6';
-  canvas.style.borderRadius = '4px';
-  canvas.style.boxShadow = '0 2px 4px rgba(0,0,0,0.1)';
-  canvas.style.margin = '4px';
+const elediv = L.DomUtil.create('div', 'leaflet-control elevation-profile');
 
-  this._canvas = canvas;
-  this._drawProfile();
 
-  // Fix events on BOTH elements
-  L.DomEvent.disableClickPropagation(elediv);
-  L.DomEvent.disableClickPropagation(canvas);
-  L.DomEvent.on(elediv, 'mousewheel', L.DomEvent.stopPropagation);
-  L.DomEvent.on(canvas, 'mousewheel', L.DomEvent.stopPropagation);
+/*elediv._tooltip = L.tooltip(elediv, {
+permanent: false,
+direction: 'auto',
+// className: 'elevation-tooltip',
+offset: [10, 10]
+}).setContent('Profil').addTo(map);
+*/
 
-  // Mouse events on container
-  elediv.addEventListener('mouseenter', () => elediv._tooltip.openTooltip());
-  elediv.addEventListener('mouseleave', () => elediv._tooltip.closeTooltip());
+const canvas = L.DomUtil.create('canvas', '', elediv);
 
-  return elediv;  // ← FIXED: return container
+// const canvas = L.DomUtil.create('canvas', 'elevation-profile');
+canvas.width = this.options.width;
+canvas.height = this.options.height;
+canvas.style.background = '#f8f9fa';
+canvas.style.border = '1px solid #dee2e6';
+canvas.style.borderRadius = '4px';
+canvas.style.boxShadow = '0 2px 4px rgba(0,0,0,0.1)';
+canvas.style.margin = '4px'; // Slight spacing
+
+this._canvas = canvas; // Store for updates
+this._drawProfile();
+
+L.DomEvent.disableClickPropagation(canvas);
+L.DomEvent.on(canvas, 'mousewheel', L.DomEvent.stopPropagation);
+
+/*elediv.addEventListener('mouseenter', () => elediv._tooltip.openTooltip());
+elediv.addEventListener('mouseleave', () => elediv._tooltip.closeTooltip());
+*/
+
+return elediv;
 },
-
+  
   _drawProfile: function() {
     if (!window.myPoints || !this._canvas) return;
     const ctx = this._canvas.getContext('2d');
