@@ -629,43 +629,39 @@ const ElevationProfileControl = L.Control.extend({
     height: 40
   },
 
-  onAdd: function(map) {
-
-
+onAdd: function(map) {
   const elediv = L.DomUtil.create('div', 'leaflet-control elevation-profile');
 
-
-     elediv._tooltip = L.tooltip(elediv, {
+  elediv._tooltip = L.tooltip(elediv, {
     permanent: false,
     direction: 'auto',
-//    className: 'elevation-tooltip',
     offset: [10, 10]
   }).setContent('Profil').addTo(map);
 
-
   const canvas = L.DomUtil.create('canvas', '', elediv);
-    
-//    const canvas = L.DomUtil.create('canvas', 'elevation-profile');
-    canvas.width = this.options.width;
-    canvas.height = this.options.height;
-    canvas.style.background = '#f8f9fa';
-    canvas.style.border = '1px solid #dee2e6';
-    canvas.style.borderRadius = '4px';
-    canvas.style.boxShadow = '0 2px 4px rgba(0,0,0,0.1)';
-    canvas.style.margin = '4px';  // Slight spacing
+  canvas.width = this.options.width;
+  canvas.height = this.options.height;
+  canvas.style.background = '#f8f9fa';
+  canvas.style.border = '1px solid #dee2e6';
+  canvas.style.borderRadius = '4px';
+  canvas.style.boxShadow = '0 2px 4px rgba(0,0,0,0.1)';
+  canvas.style.margin = '4px';
 
-    this._canvas = canvas;  // Store for updates
-    this._drawProfile();
+  this._canvas = canvas;
+  this._drawProfile();
 
-    L.DomEvent.disableClickPropagation(canvas);
-    L.DomEvent.on(canvas, 'mousewheel', L.DomEvent.stopPropagation);
+  // Fix events on BOTH elements
+  L.DomEvent.disableClickPropagation(elediv);
+  L.DomEvent.disableClickPropagation(canvas);
+  L.DomEvent.on(elediv, 'mousewheel', L.DomEvent.stopPropagation);
+  L.DomEvent.on(canvas, 'mousewheel', L.DomEvent.stopPropagation);
 
-      elediv.addEventListener('mouseenter', () => elediv._tooltip.openTooltip());
+  // Mouse events on container
+  elediv.addEventListener('mouseenter', () => elediv._tooltip.openTooltip());
   elediv.addEventListener('mouseleave', () => elediv._tooltip.closeTooltip());
 
-
-    return canvas;
-  },
+  return elediv;  // ← FIXED: return container
+},
 
   _drawProfile: function() {
     if (!window.myPoints || !this._canvas) return;
