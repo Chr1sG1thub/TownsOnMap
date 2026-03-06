@@ -635,13 +635,13 @@ onAdd: function(map) {
 const elediv = L.DomUtil.create('div', 'leaflet-control elevation-profile');
 
 
-/*elediv._tooltip = L.tooltip(elediv, {
+elediv._tooltip = L.tooltip(elediv, {
 permanent: false,
 direction: 'auto',
 // className: 'elevation-tooltip',
 offset: [10, 10]
 }).setContent('Profil').addTo(map);
-*/
+
 
 const canvas = L.DomUtil.create('canvas', '', elediv);
 
