@@ -635,14 +635,14 @@ const ElevationProfileControl = L.Control.extend({
   const elediv = L.DomUtil.create('div', 'leaflet-control elevation-profile');
 
 
-     elediv._tooltip = L.tooltip(elediv, {
+/*     elediv._tooltip = L.tooltip(elediv, {
     permanent: false,
     direction: 'auto',
 //    className: 'elevation-tooltip',
     offset: [10, 10]
   }).setContent('Profil').addTo(map);
 
-
+*/
   const canvas = L.DomUtil.create('canvas', '', elediv);
     
 //    const canvas = L.DomUtil.create('canvas', 'elevation-profile');
@@ -660,8 +660,8 @@ const ElevationProfileControl = L.Control.extend({
     L.DomEvent.disableClickPropagation(canvas);
     L.DomEvent.on(canvas, 'mousewheel', L.DomEvent.stopPropagation);
 
-      div.addEventListener('mouseenter', () => div._tooltip.openTooltip());
-  div.addEventListener('mouseleave', () => div._tooltip.closeTooltip());
+//      div.addEventListener('mouseenter', () => div._tooltip.openTooltip());
+ // div.addEventListener('mouseleave', () => div._tooltip.closeTooltip());
 
 
     return canvas;
