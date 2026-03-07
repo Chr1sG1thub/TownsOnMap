@@ -97,9 +97,9 @@
   <div id="map"></div>
 
 <div id="toggleButtons">
-  <button id="toggleAscensions" title="Ascensions" style="position: absolute; top: 90px; right: 25px; font-size: 16px; width: 50px; z-index: 1001; border-radius: 6px"><img src="mountainorange.png" style="height: 30px"></button>
-<button id="togglePlaces" title="Villages" style="position: absolute; top: 130px; right: 25px; font-size: 16px; width: 50px; z-index: 1001; border-radius: 6px"><img src="places.png" style="height: 30px"></button>
-<button id="toggleEau" title="Points d'Eau" style="position: absolute; top: 170px; right: 25px; font-size: 16px; width: 50px; z-index: 1001; border-radius: 6px;"><img src="water.png" style="height: 30px"></button>
+  <button id="toggleAscensions" title="Ascensions" style="position: absolute; top: 110px; right: 25px; font-size: 16px; width: 50px; z-index: 1001; border-radius: 6px"><img src="mountainorange.png" style="height: 30px"></button>
+<button id="togglePlaces" title="Villages" style="position: absolute; top: 150px; right: 25px; font-size: 16px; width: 50px; z-index: 1001; border-radius: 6px"><img src="places.png" style="height: 30px"></button>
+<button id="toggleEau" title="Points d'Eau" style="position: absolute; top: 190px; right: 25px; font-size: 16px; width: 50px; z-index: 1001; border-radius: 6px;"><img src="water.png" style="height: 30px"></button>
   </div>
 
   <script>
@@ -670,8 +670,8 @@ elediv.addEventListener('mouseleave', () => elediv._tooltip.closeTooltip());
 */
 
 elediv.insertAdjacentHTML('beforeend', `
-    <div style="font-size: 9px; color: #666; text-align: center; padding-top: 2px; line-height: 1.1;">
-      Min : ${trough.ele.toFixed(0)}m\nMax : ${peak.ele.toFixed(0)}m
+    <div style="font-size: 11px; color: blue; text-align: center; padding-top: 1px; line-height: 1.1; font-weight: bold;">
+      Min : ${trough.ele.toFixed(0)}m, Max : ${peak.ele.toFixed(0)}m
     </div>
   `);
   return elediv;
