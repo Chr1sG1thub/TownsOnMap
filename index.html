@@ -536,7 +536,7 @@ const bounds = myPoints.reduce((bounds, point) => {
         .addTo(map);
     }
 
-/*    // peak popup + marker
+    // peak popup + marker
     const maxEleIndex = myPoints.reduce((maxIdx, pt, idx, arr) =>
       arr[maxIdx]?.ele > pt.ele ? maxIdx : idx, 0
     );
@@ -546,6 +546,7 @@ const bounds = myPoints.reduce((bounds, point) => {
       arr[minIdx]?.ele < pt.ele ? minIdx : idx, 0
     );
     const trough = myPoints[minEleIndex];
+    */
 
  //   console.log(`Min  = ${trough.ele.toFixed(0)}m at ${trough.lat}, ${trough.lon}.`);
 
@@ -634,7 +635,7 @@ onAdd: function(map) {
 
 const elediv = L.DomUtil.create('div', 'leaflet-control elevation-profile');
 
-  elediv.title = "Profil";
+  elediv.title = `Min : ${trough.ele.toFixed(0)}m, Max : ${peak.ele.toFixed(0)}m`;
 
 
 /*
