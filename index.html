@@ -635,7 +635,7 @@ onAdd: function(map) {
 
 const elediv = L.DomUtil.create('div', 'leaflet-control elevation-profile');
 
-  elediv.title = `Elevation :\nMin : ${trough.ele.toFixed(0)}m\nMax : ${peak.ele.toFixed(0)}m`;
+//  elediv.title = `Elevation :\nMin : ${trough.ele.toFixed(0)}m\nMax : ${peak.ele.toFixed(0)}m`;
 
 
 /*
@@ -669,7 +669,12 @@ L.DomEvent.on(canvas, 'mousewheel', L.DomEvent.stopPropagation);
 elediv.addEventListener('mouseleave', () => elediv._tooltip.closeTooltip());
 */
 
-return elediv;
+elediv.insertAdjacentHTML('beforeend', `
+    <div style="font-size: 9px; color: #666; text-align: center; padding-top: 2px; line-height: 1.1;">
+      Min : ${trough.ele.toFixed(0)}m\nMax : ${peak.ele.toFixed(0)}m
+    </div>
+  `);
+  return elediv;
 },
   
   _drawProfile: function() {
