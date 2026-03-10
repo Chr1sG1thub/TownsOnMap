@@ -733,7 +733,7 @@ elediv.insertAdjacentHTML('beforeend', `
 
     // Climb Line
     ctx.beginPath();
-    for (let iclimb = 0; iclimb < climbs.length; i++) {
+    for (let iclimb = 0; iclimb < climbs.length; iclimb++) {
     for (let i = climbs[iclimb][0]; i < climbs[iclimb][1]; i++) {
       if (i % 10 == 0) {
       const x = padX + (i / (elevations.length - 1 || 1)) * innerW;
