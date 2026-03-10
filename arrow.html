@@ -494,7 +494,10 @@ var blinkingIcon = /*L.divIcon({
   ]
 }); */
 
-L.Symbol.pointyArrowHead = L.Symbol.extend({
+console.log('L.Symbol?', typeof L.Symbol);  // "function"
+console.log('L.polylineDecorator?', typeof L.polylineDecorator);  // "function"
+
+  L.Symbol.pointyArrowHead = L.Symbol.extend({
   options: {
     pixelSize: 20,  // Tip-to-base height
     baseFraction: 0.25,  // Base width as fraction of height (0.2=super pointy)
