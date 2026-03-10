@@ -731,6 +731,20 @@ elediv.insertAdjacentHTML('beforeend', `
     ctx.lineWidth = 1.5;
     ctx.stroke();
 
+    // Climb Line
+    ctx.beginPath();
+    for (let i = 200; i < 500, i++) {
+      if (i % 10 == 0) {
+      const x = padX + (i / (elevations.length - 1 || 1)) * innerW;
+      const y = yForEle(elevations[i]);
+      if (i === 0) ctx.moveTo(x, y);
+      else ctx.lineTo(x, y);
+      }
+    });
+    ctx.strokeStyle = 'red';
+    ctx.lineWidth = 1.5;
+    ctx.stroke();
+
     // Baseline
     ctx.strokeStyle = '#e0e0e0';
     ctx.lineWidth = 0.5;
