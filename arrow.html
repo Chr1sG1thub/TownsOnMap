@@ -504,7 +504,7 @@ L.Symbol.pointyArrowHead = L.Symbol.ArrowHead.extend({
   createSymbol: function (feature, coords) {
     // Override: compute custom isosceles points (narrow base for pointiness)
     const size = this.options.pixelSize;
-    const baseFraction = 0.3;  // Narrower base = pointier (0.2=very sharp, 0.4=medium)
+    const baseFraction = 0.2;  // Narrower base = pointier (0.2=very sharp, 0.4=medium)
     const baseWidth = size * baseFraction;
 
     const angle = coords.angle;
