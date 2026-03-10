@@ -497,7 +497,7 @@ var blinkingIcon = /*L.divIcon({
 L.Symbol.pointyArrowHead = L.Symbol.ArrowHead.extend({
   options: {
     polygon: true,
-    pixelSize: 20,  // Height: tip to base (increase for taller/pointier)
+    pixelSize: 10,  // Height: tip to base (increase for taller/pointier)
     pathOptions: { fillOpacity: 0.9, stroke: true, weight: 1.5, color: '#000' }
   },
 
@@ -544,9 +544,9 @@ L.pointyArrowHead = function (opts) { return new L.Symbol.pointyArrowHead(opts);
         offset: '3%',
         repeat: '3%',
     symbol: L.pointyArrowHead({
-      pixelSize: 22,           // Tune height (16-30px for mobile visibility)
+      pixelSize: 16,           // Tune height (16-30px for mobile visibility)
       pathOptions: {           // Customize colors
-        fillColor: '#ff6600',  // Orange fill
+        fillColor: 'blue',  // Orange fill
         color: '#cc5200',      // Darker outline
         fillOpacity: 0.85,
         weight: 1.2
