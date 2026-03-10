@@ -508,6 +508,7 @@ L.Symbol.pointyArrowHead = L.Symbol.extend({
   },
 
   createSymbol: function (feature, coords) {
+console.log('createSymbol called', coords);  // Should log {x:123, y:456, angle:0.78}
     const size = this.options.pixelSize;
     const baseW = size * this.options.baseFraction;
     const angle = coords.angle;  // From PolylineDecorator
