@@ -494,49 +494,54 @@ var blinkingIcon = /*L.divIcon({
   ]
 }); */
 
-L.Symbol.pointyArrowHead = L.Symbol.ArrowHead.extend({
+L.Symbol.pointyArrowHead = L.Symbol.extend({
   options: {
-    polygon: true,
-    pixelSize: 10,  // Height: tip to base (increase for taller/pointier)
-    pathOptions: { fillOpacity: 0.9, stroke: true, weight: 1.5, color: '#000' }
+    pixelSize: 20,  // Tip-to-base height
+    baseFraction: 0.25,  // Base width as fraction of height (0.2=super pointy)
+    pathOptions: {
+      fill: true,
+      fillOpacity: 0.9,
+      stroke: true,
+      weight: 1,
+      color: '#333'
+    }
   },
 
   createSymbol: function (feature, coords) {
-    // Override: compute custom isosceles points (narrow base for pointiness)
     const size = this.options.pixelSize;
-    const baseFraction = 0.2;  // Narrower base = pointier (0.2=very sharp, 0.4=medium)
-    const baseWidth = size * baseFraction;
-
-    const angle = coords.angle;
+    const baseW = size * this.options.baseFraction;
+    const angle = coords.angle;  // From PolylineDecorator
     const cx = coords.x;
     const cy = coords.y;
 
-    // Tip (forward)
+    // Tip point (forward)
     const tipX = cx + size * Math.cos(angle);
     const tipY = cy + size * Math.sin(angle);
 
-    // Base center (back from tip)
-    const baseCX = cx + (size * 0.3) * Math.cos(angle);
-    const baseCY = cy + (size * 0.3) * Math.sin(angle);
+    // Base midpoint (back)
+    const baseCX = cx + (size / 3) * Math.cos(angle);
+    const baseCY = cy + (size / 3) * Math.sin(angle);
 
-    // Perpendicular for base wings
-    const perp = angle + Math.PI / 2;
-    const halfBase = baseWidth / 2;
-    const leftX = baseCX + halfBase * Math.cos(perp);
-    const leftY = baseCY + halfBase * Math.sin(perp);
-    const rightX = baseCX - halfBase * Math.cos(perp);
-    const rightY = baseCY - halfBase * Math.sin(perp);
+    // Perp direction for base
+    const perpAngle = angle + Math.PI / 2;
+    const halfBase = baseW / 2;
+    const baseLeftX = baseCX + halfBase * Math.cos(perpAngle);
+    const baseLeftY = baseCY + halfBase * Math.sin(perpAngle);
+    const baseRightX = baseCX - halfBase * Math.cos(perpAngle);
+    const baseRightY = baseCY - halfBase * Math.sin(perpAngle);
 
-    // SVG path string
-    const d = `M ${tipX} ${tipY} L ${rightX} ${rightY} L ${leftX} ${leftY} Z`;
+    // Close polygon path
+    const d = `M${tipX},${tipY} L${baseRightX},${baseRightY} L${baseLeftX},${baseLeftY} Z`;
 
     return new L.SVGPath(d).setStyle(this.options.pathOptions);
   }
 });
 
 // Factory shorthand
-L.pointyArrowHead = function (opts) { return new L.Symbol.pointyArrowHead(opts); };
+//L.pointyArrowHead = function (opts) { return new L.Symbol.pointyArrowHead(opts); };
+  
   const polylines = findPolylinesInGPXLayer(gpxLayer);
+  
   polylines.forEach(polyline => {
     // arrows
     L.polylineDecorator(polyline, {
