@@ -262,7 +262,7 @@ console.log("start of brute force");
       const coords = points.map(p => [p.lon, p.lat]);
       //const tolerance = (courseDistance || 50) / 1000 * Math.pow(2, 0.5) * 0.01;
       const tolerance = 0.0002;
-      const simplified = turf.simplify({ type: 'LineString', coordinates: coords }, { tolerance, highQuality: true });
+      const simplified = turf.simplify({ type: 'LineString', coordinates: coords }, { tolerance, highQuality: false });
 
       const simpIndices = [];
       let maxoi = 0;
