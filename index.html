@@ -1589,11 +1589,11 @@ var eauGroup = L.layerGroup();
   //        console.log('Fetch response:', response.status, response.statusText);
           
           if (response.ok) {
-            const gpxText = await response.text();
-            await loadGPXWithText(gpxText, coffeeLat, coffeeLon, dist, deniv);
             const sleep = ms => new Promise(resolve => setTimeout(resolve, ms));
 
 await sleep(5000);  // Pause for 5 seconds
+            const gpxText = await response.text();
+            await loadGPXWithText(gpxText, coffeeLat, coffeeLon, dist, deniv);
 
             document.getElementById('attendez').style.display = "none";
             document.getElementById('toggleButtons').style.display = "block";
